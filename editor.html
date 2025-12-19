@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit New Tab Code</title>
+    <link rel="stylesheet" href="editor.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Customize Your New Tab</h1>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="html">HTML</button>
+        <button class="tab" data-tab="css">CSS</button>
+        <button class="tab" data-tab="js">JavaScript</button>
+      </div>
+
+      <textarea
+        id="html-editor"
+        class="editor"
+        placeholder="Write your HTML here..."
+      ></textarea>
+      <textarea
+        id="css-editor"
+        class="editor hidden"
+        placeholder="Write your CSS here..."
+      ></textarea>
+      <textarea
+        id="js-editor"
+        class="editor hidden"
+        placeholder="Write your JavaScript here..."
+      ></textarea>
+
+      <div class="buttons">
+        <button id="save-btn" class="btn primary">Save & Apply</button>
+        <button id="preview-btn" class="btn">Preview</button>
+        <button id="export-btn" class="btn">Export</button>
+        <button id="import-btn" class="btn">Import</button>
+        <input
+          type="file"
+          id="file-input"
+          accept=".json"
+          style="display: none"
+        />
+      </div>
+
+      <div id="preview-section" class="preview-section hidden">
+        <h2>Preview</h2>
+        <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+        <button id="close-preview" class="btn">Close Preview</button>
+      </div>
+    </div>
+
+    <script src="editor.js"></script>
+  </body>
+</html>

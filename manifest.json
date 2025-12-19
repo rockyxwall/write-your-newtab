@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Custom HTML New Tab",
+  "version": "1.0",
+  "description": "Customize your new tab with HTML, CSS, and JS",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "Edit New Tab Code"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}
