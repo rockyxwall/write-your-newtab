@@ -1,3 +1,3 @@
 chrome.action.onClicked.addListener(() => {
-  chrome.tabs.create({ url: 'editor.html' });
+  chrome.tabs.create({ url: './settings/pages/index.html' });
 });

@@ -1,0 +1,432 @@
+:root {
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #858585;
+  --color-bg-primary: #1e1e1e;
+  --color-bg-secondary: #252526;
+  --color-bg-tertiary: #2d2d30;
+  --color-border: #3e3e42;
+  --color-accent: #007acc;
+  --color-accent-hover: #1177bb;
+  --color-success: #4ec9b0;
+  --color-error: #f48771;
+  --header-height: 44px; /* unified header/toolbar height for consistent alignment */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-color: var(--color-bg-tertiary) var(--color-bg-primary);
+  scrollbar-width: thin;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+@supports (display: flex) {
+  .main-content {
+    gap: 0;
+  }
+}
+
+/* Layout Split */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+/* Ensure tabs use the same header height and center content */
+.tabs {
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  gap: 6px;
+  padding: 0 6px;
+}
+
+/* small visual tweak to keep tab height consistent */
+.tab {
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  height: calc(var(--header-height) - 12px);
+  display: inline-flex;
+  align-items: center;
+}
+
+.tab:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-tertiary);
+  border-radius: 4px;
+}
+
+.tab.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+  background: var(--color-bg-primary);
+}
+
+/* Editor Textareas */
+.editors-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Generic panel wrapper for each tab (HTML, CSS, JS, Themes, Options) */
+.editor-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-panel.hidden {
+  display: none;
+}
+
+.editor-input {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  background: var(--color-bg-primary);
+  color: #d4d4d4;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  border: none;
+  resize: none;
+  outline: none;
+  display: block;
+}
+
+.editor-input.hidden {
+  display: none;
+}
+
+/* Resizer Handle */
+.resizer {
+  width: 4px;
+  background: var(--color-border);
+  cursor: col-resize;
+  transition: background 0.2s;
+}
+
+.resizer:hover {
+  background: var(--color-accent);
+}
+
+/* Preview Area */
+.preview-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  min-width: 200px;
+}
+
+/* Use the same header height variable so both navs align */
+.preview-toolbar {
+  height: var(--header-height);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* make labels and indicators compact and vertically centered */
+.preview-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.status-indicator {
+  font-size: 10px;
+  background: var(--color-success);
+  color: #1e1e1e;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Ensure iframe fills remaining area */
+#preview-frame {
+  flex: 1;
+  border: none;
+  background: white;
+}
+
+/* Themes panel */
+.themes-container {
+  padding: 12px 14px;
+  overflow: auto;
+  height: 100%;
+}
+
+.themes-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.themes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.theme-card {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.theme-card:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.theme-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.theme-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.theme-path {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.theme-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.theme-preview-lines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.theme-preview-lines span {
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--color-bg-tertiary);
+}
+
+.theme-description {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* Options panel */
+.options-container {
+  padding: 12px 14px;
+  overflow: auto;
+  height: 100%;
+}
+
+.options-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.options-item {
+  padding: 10px;
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.options-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.options-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.options-item input[type="number"] {
+  margin-top: 6px;
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.options-desc {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* Buttons: make them match header height and be compact — reduce visual weight of settings */
+.btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: 0.15s;
+  height: calc(var(--header-height) - 12px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  box-sizing: border-box;
+}
+
+.btn:hover {
+  background: var(--color-border);
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+
+/* small success state style used in ActionsManager */
+.btn-success {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #0d0d0d;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+  .resizer {
+    width: 100%;
+    height: 4px;
+    cursor: row-resize;
+  }
+  .editor-pane, .preview-pane {
+    flex: 1;
+  }
+
+  /* stack toolbar items a bit tighter on small screens */
+  .preview-toolbar {
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .tabs {
+    padding: 0 4px;
+    gap: 4px;
+  }
+}

@@ -1,16 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Custom HTML New Tab",
+  "name": "Write Your NewTab",
   "version": "0.1.0",
-  "description": "Customize your new tab with HTML, CSS, and JS",
+  "description": "Replace the default new tab page with your own custom HTML, CSS, and JavaScript",
   "permissions": ["storage"],
   "action": {
-    "default_title": "Edit New Tab Code"
+    "default_title": "Write Your NewTab"
   },
   "background": {
     "service_worker": "background.js"
   },
   "chrome_url_overrides": {
-    "newtab": "newtab.html"
+    "newtab": "view/newtab.html"
   }
 }

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live NewTab Editor</title>
+  <link rel="stylesheet" href="../styles/editor.css" />
+</head>
+<body>
+  <div class="app-container">
+    <main class="main-content">
+      <!-- Editor Section -->
+      <section class="editor-pane">
+        <div class="tabs">
+          <button class="tab active" data-tab="html">HTML</button>
+          <button class="tab" data-tab="css">CSS</button>
+          <button class="tab" data-tab="js">JavaScript</button>
+          <button class="tab" data-tab="themes">Themes</button>
+          <button class="tab" data-tab="options">Options</button>
+        </div>
+
+        <div class="editors-container">
+          <!-- HTML Panel -->
+          <div id="tab-html" class="editor-panel">
+            <textarea
+              id="html-editor"
+              class="editor-input"
+              placeholder="<!-- HTML code here -->"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <!-- CSS Panel -->
+          <div id="tab-css" class="editor-panel hidden">
+            <textarea
+              id="css-editor"
+              class="editor-input"
+              placeholder="/* CSS styles here */"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <!-- JS Panel -->
+          <div id="tab-js" class="editor-panel hidden">
+            <textarea
+              id="js-editor"
+              class="editor-input"
+              placeholder="// JavaScript logic here"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <!-- Themes Panel -->
+          <div id="tab-themes" class="editor-panel hidden">
+            <div class="themes-container">
+              <div class="themes-header">Built‑in Themes</div>
+              <div id="themes-list" class="themes-list">
+                <!-- Populated by editor.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Options Panel -->
+          <div id="tab-options" class="editor-panel hidden">
+            <div class="options-container">
+              <div class="options-group">
+                <div class="options-item">
+                  <label class="options-label">
+                    <input type="checkbox" id="auto-save" />
+                    <span>Auto-save on change</span>
+                  </label>
+                  <p class="options-desc">
+                    Automatically save your code as you type.
+                  </p>
+                </div>
+
+                <div class="options-item">
+                  <label class="options-label" for="preview-delay">
+                    Preview update delay (ms)
+                  </label>
+                  <input
+                    type="number"
+                    id="preview-delay"
+                    min="100"
+                    max="2000"
+                    value="400"
+                  />
+                  <p class="options-desc">
+                    Delay before preview updates while typing.
+                  </p>
+                </div>
+
+                <div class="options-item">
+                  <button id="clear-btn" class="btn btn-danger">
+                    Clear All Data
+                  </button>
+                  <p class="options-desc">
+                    Permanently delete all saved code from this editor.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Resizer Handle -->
+      <div class="resizer" id="resizer"></div>
+
+      <!-- Live Preview Section -->
+      <section class="preview-pane">
+        <div class="preview-toolbar">
+          <div class="preview-header">
+            <span class="status-indicator" id="status-indicator">Live</span>
+            <span class="preview-label">Preview</span>
+          </div>
+          <div class="preview-actions">
+            <button id="save-btn" class="btn btn-primary" title="Save to Storage">Save</button>
+            <button id="export-btn" class="btn" title="Export as JSON">Export</button>
+            <button id="import-btn" class="btn" title="Import JSON">Import</button>
+            <input type="file" id="file-input" accept=".json" style="display: none" />
+          </div>
+        </div>
+        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+      </section>
+    </main>
+  </div>
+
+  <!-- Module imports -->
+  <script type="module" src="../scripts/editor.js"></script>
+</body>
+</html>
+
