@@ -15,8 +15,6 @@
           <button class="tab active" data-tab="html">HTML</button>
           <button class="tab" data-tab="css">CSS</button>
           <button class="tab" data-tab="js">JavaScript</button>
-          <button class="tab" data-tab="themes">Themes</button>
-          <button class="tab" data-tab="options">Options</button>
         </div>
 
         <div class="editors-container">
@@ -48,58 +46,6 @@
               placeholder="// JavaScript logic here"
               spellcheck="false"
             ></textarea>
-          </div>
-
-          <!-- Themes Panel -->
-          <div id="tab-themes" class="editor-panel hidden">
-            <div class="themes-container">
-              <div class="themes-header">Built‑in Themes</div>
-              <div id="themes-list" class="themes-list">
-                <!-- Populated by editor.js -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Options Panel -->
-          <div id="tab-options" class="editor-panel hidden">
-            <div class="options-container">
-              <div class="options-group">
-                <div class="options-item">
-                  <label class="options-label">
-                    <input type="checkbox" id="auto-save" />
-                    <span>Auto-save on change</span>
-                  </label>
-                  <p class="options-desc">
-                    Automatically save your code as you type.
-                  </p>
-                </div>
-
-                <div class="options-item">
-                  <label class="options-label" for="preview-delay">
-                    Preview update delay (ms)
-                  </label>
-                  <input
-                    type="number"
-                    id="preview-delay"
-                    min="100"
-                    max="2000"
-                    value="400"
-                  />
-                  <p class="options-desc">
-                    Delay before preview updates while typing.
-                  </p>
-                </div>
-
-                <div class="options-item">
-                  <button id="clear-btn" class="btn btn-danger">
-                    Clear All Data
-                  </button>
-                  <p class="options-desc">
-                    Permanently delete all saved code from this editor.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
