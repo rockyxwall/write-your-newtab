@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <!--
+    VIEWPORT META TAG — Why is this here?
+    When a user uploads their own HTML with CSS like "width: 100vw" or
+    "font-size: 5vw", those units are relative to the viewport (the visible
+    screen area). Without this tag, some browsers guess the width wrong,
+    causing the layout to look zoomed out or broken.
+    "width=device-width" = use the actual screen width
+    "initial-scale=1"    = don't zoom in or out on load
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>New Tab</title>
+
+  <style>
+    /*
+      THE FLASH FIX
+      Without this, when you open a new tab, you see a WHITE FLASH for
+      a split second while the browser loads the stored HTML from storage.
+      By hardcoding a dark background here in the CSS, the page is always
+      dark from the very first frame — the flash disappears.
+    */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #1a1a1a;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /*
+      The #app div is where user content gets injected.
+      We make it fill the entire screen so user CSS works correctly.
+    */
+    #app {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+  </style>
+</head>
+<body>
+
+  <!--
+    THE CONTAINER — This is the only HTML element on the page.
+    newtab.js will fill this div with the user's saved HTML.
+    It starts empty, which is why the dark background above is important.
+  -->
+  <div id="app"></div>
+
+  <!--
+    Load newtab.js AFTER the div exists in the page.
+    If we loaded the script in <head>, the div wouldn't exist yet when
+    the script tries to find it, causing an error.
+    The "defer" attribute tells the browser: "load this script after
+    the HTML is fully parsed."
+  -->
+  <script src="newtab.js" defer></script>
+
+</body>
+</html>

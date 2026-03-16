@@ -1,16 +1,39 @@
 {
   "manifest_version": 3,
-  "name": "Write Your NewTab",
-  "version": "0.1.1",
-  "description": "Replace the default new tab page with your own custom HTML, CSS, and JavaScript",
-  "permissions": ["storage"],
-  "action": {
-    "default_title": "Write Your NewTab"
-  },
+  "name": "TabCraft – Custom New Tab",
+  "version": "1.0.0",
+  "description": "Replace your New Tab with your own HTML. Upload, manage, and switch templates — all offline.",
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "unlimitedStorage"
+  ],
+
   "background": {
     "service_worker": "background.js"
   },
+
   "chrome_url_overrides": {
-    "newtab": "view/newtab.html"
+    "newtab": "newtab.html"
+  },
+
+  "action": {
+    "default_title": "Open TabCraft Dashboard",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; font-src 'self' data:"
+  },
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }
