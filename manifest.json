@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TabCraft – Custom New Tab",
+  "name": "WYNTab",
   "version": "1.0.0",
   "description": "Replace your New Tab with your own HTML. Upload, manage, and switch templates — all offline.",
 
@@ -19,7 +19,7 @@
   },
 
   "action": {
-    "default_title": "Open TabCraft Dashboard",
+    "default_title": "Open WYNTab Dashboard",
     "default_icon": {
       "16":  "icons/icon16.png",
       "48":  "icons/icon48.png",

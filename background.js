@@ -9,7 +9,7 @@
  * the old "background pages."
  *
  * THIS FILE'S ONE JOB:
- * When the user clicks the TabCraft icon in the toolbar, open the dashboard
+ * When the user clicks the WYNTab icon in the toolbar, open the dashboard
  * in a new tab. That's it!
  */
 

@@ -3,7 +3,7 @@
  *
  * WHAT IS THIS FILE?
  * This file stores 3 beautiful starter templates as JavaScript strings.
- * When someone installs TabCraft for the first time, instead of seeing a
+ * When someone installs WYNTab for the first time, instead of seeing a
  * blank white screen, they immediately have 3 ready-to-use tab designs.
  *
  * WHY STORE HTML AS STRINGS?
@@ -218,7 +218,7 @@ const DEFAULT_TEMPLATES = [
 
     // When the page loads, check if there was a saved focus from before
     // localStorage is like a tiny notebook built into the browser
-    const savedFocus = localStorage.getItem('tabcraft-focus');
+    const savedFocus = localStorage.getItem('WYNTab-focus');
     if (savedFocus) {
       input.value = savedFocus;
     }
@@ -227,14 +227,14 @@ const DEFAULT_TEMPLATES = [
     input.addEventListener('keydown', function(event) {
       // event.key tells us which key was pressed
       if (event.key === 'Enter') {
-        localStorage.setItem('tabcraft-focus', input.value);
+        localStorage.setItem('WYNTab-focus', input.value);
         input.blur(); // Remove focus from the input (hide the cursor)
       }
     });
 
     // Also save automatically as the user types (every keystroke)
     input.addEventListener('input', function() {
-      localStorage.setItem('tabcraft-focus', input.value);
+      localStorage.setItem('WYNTab-focus', input.value);
     });
   </script>
 </body>
@@ -348,7 +348,7 @@ const DEFAULT_TEMPLATES = [
 </head>
 <body>
   <div class="terminal-window">
-    <div class="terminal-header">TABCRAFT TERMINAL v1.0.0</div>
+    <div class="terminal-header">WYNTab TERMINAL v1.0.0</div>
 
     <div class="line"><span class="prompt">&gt; </span><span class="output">system.boot() — OK</span></div>
     <div class="line"><span class="prompt">&gt; </span><span class="output">user.session — <span class="highlight">ACTIVE</span></span></div>

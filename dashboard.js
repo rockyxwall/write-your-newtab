@@ -5,7 +5,7 @@
  * BIG PICTURE: WHAT DOES THIS FILE DO?
  * ═══════════════════════════════════════════════════════════════
  *
- * This is the brain of the TabCraft dashboard. It:
+ * This is the brain of the WYNTab dashboard. It:
  *
  *   1. READS storage to show the current active template and library
  *   2. HANDLES file uploads (when a user selects an .html file)
@@ -582,7 +582,7 @@ function handleExport() {
       const activeTemplate = allTemplates.find(function (t) { return t.id === activeId; });
       const fileName = activeTemplate
         ? activeTemplate.name.replace(/[^a-z0-9]/gi, "-").toLowerCase() + ".html"
-        : "tabcraft-backup.html";
+        : "WYNTab-backup.html";
 
       // Create a Blob from the HTML string
       // "text/html" is the MIME type (tells the OS what kind of file this is)

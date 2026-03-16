@@ -118,7 +118,7 @@ function renderActiveTemplate() {
           .welcome p { font-size: 0.9rem; opacity: 0.6; }
         </style>
         <div class="welcome">
-          <h1>TabCraft is installed! 🎉</h1>
+          <h1>WYNTab is installed! 🎉</h1>
           <p>Click the extension icon to open the dashboard and choose a template.</p>
         </div>
       `;
