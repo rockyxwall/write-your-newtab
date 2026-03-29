@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WYNTab — Dashboard</title>
+
+  <!--
+    We load our external CSS file for all the visual styling.
+    Keeping CSS in a separate file makes it easier to maintain.
+  -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       TOP NAVIGATION BAR
+  ═══════════════════════════════════════════ -->
+  <nav class="topbar">
+    <div class="topbar-logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">WYNTab</span>
+    </div>
+    <span class="topbar-sub">New Tab Manager</span>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN PAGE CONTENT
+  ═══════════════════════════════════════════ -->
+  <main class="page">
+
+    <!-- ───────────────────────────────────────
+         SECTION 1: CURRENTLY ACTIVE TEMPLATE
+    ─────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section-title">Active Template</h2>
+
+      <!--
+        This card shows what template is currently active.
+        dashboard.js will update the text inside it dynamically.
+      -->
+      <div class="active-card" id="activeCard">
+        <div class="active-card-info">
+          <span class="active-badge">LIVE</span>
+          <!-- dashboard.js writes the active template name here -->
+          <span class="active-name" id="activeName">Loading...</span>
+        </div>
+        <!--
+          The "Export / Backup" button.
+          When clicked, dashboard.js downloads the active HTML as a file.
+          This protects against losing work if the user clears browser data.
+        -->
+        <button class="btn btn-ghost" id="exportBtn" title="Download active HTML as a file">
+          ↓ Export Backup
+        </button>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────
+         SECTION 2: TEMPLATE LIBRARY
+    ─────────────────────────────────────────── -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Template Library</h2>
+        <!--
+          This "Upload" button is actually a label that triggers the hidden
+          file input below. When clicked, it opens the OS file picker.
+        -->
+        <label class="btn btn-primary" for="fileInput">
+          + Upload HTML
+        </label>
+      </div>
+
+      <!--
+        THE HIDDEN FILE INPUT
+        We hide the ugly default file input and style the label above instead.
+        "accept='.html'" means only .html files appear in the file picker.
+        dashboard.js listens for changes on this input.
+      -->
+      <input
+        type="file"
+        id="fileInput"
+        accept=".html"
+        style="display: none;"
+        aria-label="Upload an HTML file"
+      >
+
+      <!--
+        STATUS MESSAGE BAR
+        dashboard.js shows upload success/error messages here.
+        Starts hidden (display:none in CSS).
+      -->
+      <div class="status-bar" id="statusBar" role="alert"></div>
+
+      <!--
+        THE TEMPLATE GRID
+        dashboard.js dynamically creates cards and inserts them here.
+        It starts empty in the HTML; all cards are built by JavaScript.
+      -->
+      <div class="template-grid" id="templateGrid">
+        <!-- Cards are injected here by dashboard.js -->
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────
+         SECTION 3: HELP / INFO
+    ─────────────────────────────────────────── -->
+    <section class="section section-help">
+      <h3 class="help-title">How to use WYNTab</h3>
+      <div class="help-grid">
+        <div class="help-item">
+          <span class="help-num">01</span>
+          <p>Click <strong>Upload HTML</strong> to add your own custom tab page.</p>
+        </div>
+        <div class="help-item">
+          <span class="help-num">02</span>
+          <p>Click <strong>Activate</strong> on any template to set it as your new tab.</p>
+        </div>
+        <div class="help-item">
+          <span class="help-num">03</span>
+          <p>Use <strong>Export Backup</strong> to download your HTML before clearing browser data.</p>
+        </div>
+        <div class="help-item">
+          <span class="help-num">04</span>
+          <p>All data is stored <strong>locally</strong> — nothing is sent to the internet.</p>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- end .page -->
+
+  <!--
+    SCRIPT LOADING ORDER MATTERS
+    We load defaults.js BEFORE dashboard.js because dashboard.js needs
+    the DEFAULT_TEMPLATES variable defined in defaults.js.
+    Think of it like: you can't use an ingredient before it's been added to the kitchen.
+  -->
+  <script src="defaults.js"></script>
+  <script src="dashboard.js"></script>
+
+</body>
+</html>
