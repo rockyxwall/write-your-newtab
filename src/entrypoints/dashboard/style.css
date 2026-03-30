@@ -1,0 +1,459 @@
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — The color palette and spacing system
+═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:           #0e0e10;   /* Main page background (near-black) */
+  --surface:      #18181b;   /* Card / panel background */
+  --surface-2:    #27272a;   /* Hover / slightly lighter surface */
+  --border:       #3f3f46;   /* Subtle borders */
+  --accent:       #a78bfa;   /* Purple accent (buttons, highlights) */
+  --accent-hover: #c4b5fd;   /* Lighter purple on hover */
+  --green:        #4ade80;   /* Success / active indicator */
+  --red:          #f87171;   /* Error / delete */
+  --yellow:       #fbbf24;   /* Warning / info */
+  --text-primary: #fafafa;   /* Main text */
+  --text-muted:   #a1a1aa;   /* Subdued text */
+  --text-faint:   #52525b;   /* Very faint text */
+
+  --radius:    10px;         /* Default border radius */
+  --radius-sm: 6px;
+  --gap:       1.5rem;       /* Standard spacing unit */
+
+  /* Font stack: JetBrains Mono for code/numbers, then fallbacks */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BASE RESET & TYPOGRAPHY
+═══════════════════════════════════════════════════════════ */
+
+/* Box-sizing: border-box makes width/height calculations predictable.
+   "Inherit" means all children use this rule too. */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;  /* Sharper text on macOS */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION BAR
+═══════════════════════════════════════════════════════════ */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gap);
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(14, 14, 16, 0.95);
+  /* sticky: stays at top even when scrolling */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* backdrop-filter: blur behind the navbar for depth */
+  backdrop-filter: blur(12px);
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+  color: var(--accent);
+  /* Subtle glow around the icon */
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.5));
+}
+
+.logo-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.topbar-sub {
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+═══════════════════════════════════════════════════════════ */
+
+.page {
+  max-width: 900px;         /* Don't stretch too wide on big screens */
+  margin: 0 auto;           /* Center horizontally */
+  padding: 2.5rem var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION BLOCKS
+═══════════════════════════════════════════════════════════ */
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 1rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACTIVE TEMPLATE CARD
+═══════════════════════════════════════════════════════════ */
+
+.active-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* A subtle left-side accent line */
+  border-left: 3px solid var(--green);
+  gap: 1rem;
+}
+
+.active-card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.active-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.active-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STATUS MESSAGE BAR
+═══════════════════════════════════════════════════════════ */
+
+.status-bar {
+  display: none;   /* Hidden by default; dashboard.js shows/hides it */
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  /* Smooth appear/disappear */
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.status-success {
+  color: var(--green);
+  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.25);
+}
+
+.status-error {
+  color: var(--red);
+  background: rgba(248, 113, 113, 0.08);
+  border-color: rgba(248, 113, 113, 0.25);
+}
+
+.status-info {
+  color: var(--yellow);
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TEMPLATE GRID — The library of cards
+═══════════════════════════════════════════════════════════ */
+
+.template-grid {
+  display: grid;
+  /*
+    auto-fill = create as many columns as fit
+    minmax(220px, 1fr) = each column at least 220px wide, at most 1 fraction
+    This creates a responsive grid: 1 column on mobile, 3+ on desktop.
+  */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* Individual template card */
+.template-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.1rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.template-card:hover {
+  border-color: var(--text-faint);
+  transform: translateY(-2px);
+}
+
+/* Active card gets a colored border */
+.template-card.is-active {
+  border-color: var(--accent);
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* The green dot shown on the active card */
+.card-active-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.6);
+  flex-shrink: 0;
+}
+
+.card-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  /* Prevent very long names from breaking the layout */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Long names get "..." at the end */
+  flex: 1;
+}
+
+/* "Built-in" or "Custom" tag label */
+.card-tag {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--text-faint);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.card-tag-user {
+  color: var(--accent);
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.3);
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTON STYLES
+═══════════════════════════════════════════════════════════ */
+
+/* Base button reset and shared styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  text-decoration: none;     /* For <label> styled as button */
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:active { transform: scale(0.97); }
+
+/* Primary (purple) button — "Upload HTML" */
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+/* Ghost (outlined) button — "Export Backup" */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+}
+
+.btn-ghost:hover {
+  color: var(--text-primary);
+  border-color: var(--text-faint);
+  background: var(--surface-2);
+}
+
+/* Small button variant for card actions */
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+/* Activate button (blue-ish) */
+.btn-activate {
+  background: rgba(167, 139, 250, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  flex: 1;
+}
+
+.btn-activate:hover {
+  background: rgba(167, 139, 250, 0.25);
+}
+
+/* Delete button (red-ish) */
+.btn-delete {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.btn-delete:hover {
+  background: rgba(248, 113, 113, 0.2);
+}
+
+/* Disabled button (shown when template is already active) */
+.btn-disabled {
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--green);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  cursor: default;
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HELP SECTION
+═══════════════════════════════════════════════════════════ */
+
+.section-help {
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+.help-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 1.25rem;
+}
+
+.help-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.help-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.help-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+.help-item p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.help-item strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile adjustments
+═══════════════════════════════════════════════════════════ */
+
+/* @media queries apply styles only when the screen is a certain size */
+@media (max-width: 600px) {
+
+  .page {
+    padding: 1.5rem 1rem;
+    gap: 2rem;
+  }
+
+  .active-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbar-sub {
+    display: none; /* Hide subtitle on very small screens */
+  }
+
+}
