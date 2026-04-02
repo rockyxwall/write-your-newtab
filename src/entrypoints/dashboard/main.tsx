@@ -1,10 +1,11 @@
 // entrypoints/dashboard/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App'; // Or create your UI right here
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+  <h1 className="text-3xl font-bold underline bg-amber-600">
+    Hello world! yoo
+  </h1>
   </React.StrictMode>,
 );
