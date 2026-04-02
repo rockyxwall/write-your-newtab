@@ -1,19 +1,22 @@
 # GEMINI.md - WYNTab (Write Your New Tab)
 
 ## Project Overview
-**WYNTab** is a browser extension that allows users to fully customize their New Tab page by uploading and activating their own HTML templates. It is built using the [WXT (Web Extension Toolbox)](https://wxt.dev/) framework with **React 19** and **TypeScript**.
+**WYNTab** is a browser extension that allows users to fully customize their New Tab page by uploading and activating their own HTML templates. It is built using the [WXT (Web Extension Toolbox)](https://wxt.dev/) framework with **React 19**, **TypeScript**, and **Tailwind CSS 4**.
 
 ### Core Components
-- **New Tab (`src/entrypoints/newtab/`)**: The custom new tab page. it retrieves stored HTML from `browser.storage.local` and injects it into the DOM. It also handles re-executing `<script>` tags found within the injected HTML.
-- **Dashboard (`src/entrypoints/dashboard/`)**: A React-based interface for managing templates. Users can upload HTML files, preview them, and set them as the active new tab.
+- **New Tab (`src/entrypoints/newtab/`)**: The custom new tab page. It retrieves the active template's HTML from `browser.storage.local` and renders it inside an `iframe` using a **Blob URL**. This approach allows the custom HTML's scripts to execute naturally within a sandboxed environment.
+- **Dashboard (`src/entrypoints/dashboard/`)**: A React-based interface for managing templates. Users can upload HTML files, preview them, and set them as the active new tab. It uses **shadcn/ui** and **Lucide Icons** for a modern interface.
 - **Background (`src/entrypoints/background.ts`)**: Handles the extension's "action" (icon click) to open or focus the Dashboard page.
-- **Content Script (`src/entrypoints/content.ts`)**: A placeholder content script that currently runs on all matches.
+- **Lib (`src/lib/`)**: Shared utility functions and core logic:
+  - `storage.ts`: Strongly-typed storage definitions using `@wxt-dev/storage`.
+  - `templates.ts`: Logic for discovering built-in templates and managing template metadata.
+  - `sanitize.ts`: Manual `DOMParser`-based sanitization for user-uploaded HTML to ensure compliance with browser extension security standards.
 
 ### Key Technologies
 - **Framework**: [WXT](https://wxt.dev/)
 - **UI Library**: [React 19](https://react.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Storage**: `browser.storage.local` is used to persist HTML templates and settings.
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) with **shadcn/ui**.
+- **Storage**: `@wxt-dev/storage` (wraps `browser.storage.local`) for persisting templates and settings.
 
 ---
 
@@ -56,16 +59,17 @@ bun compile
 
 ### Architecture
 - **Entrypoints**: WXT entrypoints are located in `src/entrypoints/`.
-- **State Management**: React `useState` and `useEffect` are used for local component state, while `browser.storage.local` handles persistent data across the extension.
-- **Styling**: Standard CSS is used (e.g., `src/entrypoints/dashboard/style.css`).
+- **State Management**: React `useState` and `useEffect` are used for local component state. Persistent data is handled by `@wxt-dev/storage` keys defined in `src/lib/storage.ts`.
+- **Styling**: Tailwind CSS 4 is the primary styling solution. Shared UI components are located in `src/components/ui/`.
+- **Built-in Templates**: Any `.html` file added to `src/builtins/` is automatically discovered and made available in the Dashboard using Vite's `import.meta.glob`.
 
 ### Coding Standards
-- **TypeScript**: Strictly typed interfaces should be defined for storage and state (e.g., `WxtStorage`).
-- **React**: Functional components and Hooks are preferred.
-- **Safety**: Injected HTML uses `dangerouslySetInnerHTML`, which is intentional for this extension's purpose but requires careful handling of scripts (managed in `main.tsx`).
+- **TypeScript**: Strictly typed interfaces for storage and templates (see `src/lib/storage.ts` and `src/lib/templates.ts`).
+- **React**: Functional components and Hooks are required.
+- **Safety**: User-uploaded HTML is sanitized in `src/lib/sanitize.ts` before storage to remove `<script>`, `<iframe>`, and `on*` attributes, as required for Chrome Web Store safety.
 
 ---
 
 ## Usage
-- **Active Template**: The `activeTemplateHtml` key in local storage holds the HTML currently rendered in the New Tab.
-- **Template Library**: (Planned) Multiple templates can be stored and swapped via the Dashboard.
+- **Active Template**: `activeTemplateId` and `activeTemplateHtml` in local storage track the current selection.
+- **Template Library**: Users can manage a library of templates, including built-ins and custom uploads, via the Dashboard.

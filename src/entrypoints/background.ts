@@ -1,5 +1,5 @@
 export default defineBackground(() => {
-  console.log('Hello background!', { id: browser.runtime.id });
+  // console.log('Hello background!', { id: browser.runtime.id });
 
   // popup to direct open full page.
   browser.action.onClicked.addListener(async () => {
@@ -11,4 +11,8 @@ export default defineBackground(() => {
       browser.tabs.create({ url });
     }
   });
+
+  // browser.action.onClicked.addListener(() => {
+  //   browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') })
+  // })
 });

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clock</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100dvh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Courier New', monospace; color: #fff; overflow: hidden;
+    }
+    #clock {
+      font-size: clamp(4rem, 15vw, 10rem); font-weight: 100;
+      letter-spacing: 0.05em; text-shadow: 0 0 60px rgba(180, 160, 255, 0.4);
+      animation: fadeIn 1s ease forwards;
+    }
+    #date {
+      margin-top: 1rem; font-size: clamp(0.8rem, 2vw, 1.1rem);
+      letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+  <div id="clock">00:00:00</div>
+  <div id="date"></div>
+  <script>
+    function tick() {
+      const now = new Date()
+      const pad = n => String(n).padStart(2, '0')
+      document.getElementById('clock').textContent =
+        `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+      document.getElementById('date').textContent =
+        now.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' })
+    }
+    tick()
+    setInterval(tick, 1000)
+  </script>
+</body>
+</html>

@@ -7,6 +7,6 @@ export default defineConfig({
   manifest: {
       // This tells the browser to show the icon in the toolbar
       action: {}, 
-      permissions: ['tabs'],
+      permissions: ['tabs', 'storage'],
     },
 });
