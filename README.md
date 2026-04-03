@@ -4,7 +4,7 @@
     <img src="./public/icon/128.png" alt="WYNTab logo" height="128px" width="128px" />
 </a>
 
-# WYNTab (Write Your New Tab)
+# Write Your New Tab
 
 </div>
 
