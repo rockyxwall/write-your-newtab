@@ -1,11 +1,6 @@
-// import.meta.glob is a Vite feature that reads all matching files at build time.
-// `as: 'raw'` means: import the FILE CONTENTS as a plain string (not as a module).
-// `eager: true` means: load everything immediately, not lazily.
-// The result: every .html file in src/builtins/ becomes a key-value pair:
-//   { '../builtins/clock.html': '<html>...</html>', ... }
-// ADD A NEW .html FILE → it automatically appears in the dashboard. Zero config.
 const builtinFiles = import.meta.glob<string>('../builtins/*.html', {
-  as: 'raw',
+  query: '?raw',
+  import: 'default',
   eager: true,
 })
 
