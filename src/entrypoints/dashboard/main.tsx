@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
-import { Moon, Sun, Upload, Trash2, Zap, CheckCircle2 } from 'lucide-react'
+import { Moon, Sun, Upload, Trash2, Zap, CheckCircle2, LayoutGrid, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardPreview } from '@/components/ui/card'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
 import { activeTemplateHtml, activeTemplateId, userTemplates } from '@/lib/storage'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -38,40 +38,48 @@ function TemplateCard({
   onDelete?: () => void
 }) {
   return (
-    <Card className={isActive ? 'ring-2 ring-primary' : 'hover:shadow-md'}>
-      <CardHeader>
+    <Card className={cn(
+      "h-full flex flex-col group",
+      isActive && "border-primary/50 shadow-lg shadow-primary/5"
+    )}>
+      <CardPreview html={template.html} />
+      
+      <CardHeader className="p-3 pb-0 space-y-1">
         <div className="flex items-start justify-between gap-2">
-          <CardTitle>{template.name}</CardTitle>
-          <Badge variant={template.isBuiltin ? "secondary" : "outline"}>
+          <CardTitle className="truncate text-[11px] font-bold leading-tight uppercase tracking-tight">
+            {template.name}
+          </CardTitle>
+          <Badge variant={template.isBuiltin ? "secondary" : "outline"} className="shrink-0 text-[8px] px-1 py-0 h-3.5 uppercase font-black">
             {template.isBuiltin ? 'Built-in' : 'Custom'}
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent>
-        {isActive && (
-          <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400">
-            <CheckCircle2 size={11} />
-            <span>Active on new tab</span>
+      <CardContent className="p-3 py-2 flex-grow">
+        {isActive ? (
+          <div className="flex items-center gap-1 text-[9px] text-green-600 dark:text-green-400 font-black uppercase tracking-widest">
+            <CheckCircle2 size={10} strokeWidth={3} />
+            <span>Active</span>
           </div>
+        ) : (
+          <div className="h-3" /> 
         )}
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="p-3 pt-0 gap-1.5 mt-auto">
         {isActive ? (
-          <div className="flex-1 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground h-7 px-2.5 text-[0.8rem] font-medium shadow-none">
-            <CheckCircle2 size={11} className="mr-1" />
-            Active
+          <div className="flex-1 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground h-8 px-3 text-[10px] font-bold uppercase tracking-wider">
+            Selected
           </div>
         ) : (
-          <Button size="sm" className="flex-1" onClick={onActivate}>
-            <Zap size={11} className="mr-1" />
+          <Button size="sm" className="flex-1 h-8 text-[10px] font-bold uppercase tracking-wider cursor-pointer" onClick={onActivate}>
+            <Zap size={10} className="mr-1" />
             Activate
           </Button>
         )}
         {!template.isBuiltin && onDelete && (
-          <Button size="sm" variant="destructive" onClick={onDelete}>
-            <Trash2 size={11} />
+          <Button size="sm" variant="destructive" className="h-8 w-8 p-0 shrink-0 cursor-pointer" onClick={onDelete}>
+            <Trash2 size={12} />
           </Button>
         )}
       </CardFooter>
@@ -95,7 +103,7 @@ function Dashboard() {
       activeTemplateId.getValue(),
       userTemplates.getValue(),
     ]).then(([id, saved]) => {
-      setUserList(saved)
+      setUserList(saved || [])
       if (!id && builtins.length > 0) {
         doActivate(builtins[0])
       } else {
@@ -116,7 +124,7 @@ function Dashboard() {
       activeTemplateHtml.setValue(template.html),
     ])
     setActiveId(template.id)
-    showStatus(`"${template.name}" is now your new tab.`, true)
+    showStatus(`"${template.name}" activated.`, true)
   }
 
   async function doDelete(id: string) {
@@ -124,11 +132,15 @@ function Dashboard() {
     await userTemplates.setValue(updated)
     setUserList(updated)
     if (activeId === id) {
-      await Promise.all([
-        activeTemplateId.setValue(''),
-        activeTemplateHtml.setValue(''),
-      ])
-      setActiveId('')
+      const defaultT = builtins[0]
+      if (defaultT) doActivate(defaultT)
+      else {
+        await Promise.all([
+          activeTemplateId.setValue(''),
+          activeTemplateHtml.setValue(''),
+        ])
+        setActiveId('')
+      }
     }
     showStatus('Template deleted.', true)
   }
@@ -168,18 +180,40 @@ function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
 
       {/* ── Header ── */}
-      <header className="border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <span className="text-base font-semibold tracking-tight">Write Your Newtab</span>
+      <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-md z-20">
+        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
+            <div className="bg-primary p-1.5 rounded-lg">
+              <Sparkles size={18} className="text-primary-foreground" />
+            </div>
+            <span className="text-lg font-black uppercase tracking-tighter italic">WYNTab</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="file"
+              ref={fileRef}
+              className="hidden"
+              accept=".html"
+              onChange={handleFile}
+            />
             <Button
-              variant="ghost"
+              variant="default"
+              size="sm"
+              onClick={() => fileRef.current?.click()}
+              className="font-bold uppercase tracking-wider text-[10px] h-9 px-4 rounded-full"
+            >
+              <Upload size={14} className="mr-2" />
+              Upload HTML
+            </Button>
+            <Button
+              variant="outline"
               size="icon"
               onClick={() => setDark(!dark)}
               aria-label="Toggle dark mode"
+              className="rounded-full h-9 w-9"
             >
               {dark ? <Sun size={15} /> : <Moon size={15} />}
             </Button>
@@ -188,14 +222,17 @@ function Dashboard() {
       </header>
 
       {/* ── Content ── */}
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
 
         {/* Built-in templates */}
-        <section>
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-            Built-in
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <section className="space-y-6">
+          <div className="flex items-center gap-2 border-b border-border/50 pb-2">
+            <LayoutGrid size={14} className="text-muted-foreground" />
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+              Built-in Gallery
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {builtins.map((t) => (
               <TemplateCard
                 key={t.id}
@@ -207,16 +244,46 @@ function Dashboard() {
           </div>
         </section>
 
+        {/* User templates */}
+        {userList.length > 0 && (
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b border-border/50 pb-2">
+              <Upload size={14} className="text-muted-foreground" />
+              <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                Your Custom Uploads
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {userList.map((t) => (
+                <TemplateCard
+                  key={t.id}
+                  template={t}
+                  isActive={t.id === activeId}
+                  onActivate={() => doActivate(t)}
+                  onDelete={() => doDelete(t.id)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
       </main>
+
+      {/* ── Footer ── */}
+      <footer className="max-w-4xl mx-auto px-6 py-12 border-t border-border/50">
+        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest text-center">
+          Crafted for your perfect new tab experience
+        </p>
+      </footer>
 
       {/* ── Status toast ── */}
       {status && (
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className={cn(
-            'rounded-lg border px-4 py-2.5 text-sm shadow-lg backdrop-blur-sm whitespace-nowrap',
+            'rounded-full border px-6 py-3 text-[11px] font-bold uppercase tracking-widest shadow-2xl backdrop-blur-xl whitespace-nowrap',
             status.ok
-              ? 'border-green-500/25 bg-green-500/10 text-green-700 dark:text-green-400'
-              : 'border-red-500/25 bg-red-500/10 text-red-700 dark:text-red-400'
+              ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400'
+              : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400'
           )}>
             {status.msg}
           </div>
