@@ -2,9 +2,9 @@ import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
 import { Moon, Sun, Upload, Trash2, Zap, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
 import { activeTemplateHtml, activeTemplateId, userTemplates } from '@/lib/storage'
 import { sanitizeHtml } from '@/lib/sanitize'
@@ -39,19 +39,16 @@ function TemplateCard({
 }) {
   return (
     <Card className={isActive ? 'ring-2 ring-primary' : 'hover:shadow-md'}>
-      <CardHeader className="pb-2">
+      <CardHeader>
         <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-sm font-medium leading-tight">{template.name}</CardTitle>
-          <Badge
-            variant={template.isBuiltin ? 'secondary' : 'outline'}
-            className="shrink-0 text-xs"
-          >
+          <CardTitle>{template.name}</CardTitle>
+          <Badge variant={template.isBuiltin ? "secondary" : "outline"}>
             {template.isBuiltin ? 'Built-in' : 'Custom'}
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="pb-2">
+      <CardContent>
         {isActive && (
           <div className="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400">
             <CheckCircle2 size={11} />
@@ -60,20 +57,20 @@ function TemplateCard({
         )}
       </CardContent>
 
-      <CardFooter className="gap-2">
+      <CardFooter>
         {isActive ? (
-          <Button size="sm" variant="secondary" className="flex-1 text-xs pointer-events-none shadow-none active:translate-y-0">
+          <div className="flex-1 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground h-7 px-2.5 text-[0.8rem] font-medium shadow-none">
             <CheckCircle2 size={11} className="mr-1" />
             Active
-          </Button>
+          </div>
         ) : (
-          <Button size="sm" className="flex-1 text-xs active:translate-y-0" onClick={onActivate}>
+          <Button size="sm" className="flex-1" onClick={onActivate}>
             <Zap size={11} className="mr-1" />
             Activate
           </Button>
         )}
         {!template.isBuiltin && onDelete && (
-          <Button size="sm" variant="destructive" onClick={onDelete} className="px-2.5 active:translate-y-0">
+          <Button size="sm" variant="destructive" onClick={onDelete}>
             <Trash2 size={11} />
           </Button>
         )}
@@ -179,25 +176,13 @@ function Dashboard() {
           <span className="text-base font-semibold tracking-tight">Write Your Newtab</span>
           <div className="flex items-center gap-2">
             <Button
-              size="sm"
               variant="ghost"
+              size="icon"
               onClick={() => setDark(!dark)}
-              className="px-2"
               aria-label="Toggle dark mode"
             >
               {dark ? <Sun size={15} /> : <Moon size={15} />}
             </Button>
-            {/* <Button size="sm" onClick={() => fileRef.current?.click()}>
-              <Upload size={13} className="mr-1.5" />
-              Upload HTML
-            </Button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".html"
-              className="hidden"
-              onChange={handleFile}
-            /> */}
           </div>
         </div>
       </header>
@@ -221,35 +206,6 @@ function Dashboard() {
             ))}
           </div>
         </section>
-
-        {/* User uploads */}
-        {/* {userList.length > 0 ? (
-          <section>
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-              Your uploads
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {userList.map((t) => (
-                <TemplateCard
-                  key={t.id}
-                  template={t}
-                  isActive={t.id === activeId}
-                  onActivate={() => doActivate(t)}
-                  onDelete={() => doDelete(t.id)}
-                />
-              ))}
-            </div>
-          </section>
-        ) : (
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="w-full border-2 border-dashed border-border rounded-xl py-10 text-muted-foreground text-sm hover:border-primary/40 hover:text-foreground transition-colors cursor-pointer bg-transparent"
-          >
-            <Upload size={18} className="mx-auto mb-2 opacity-40" />
-            <p>Upload your own HTML file</p>
-            <p className="text-xs mt-1 opacity-60">Scripts are sanitized for safety</p>
-          </button>
-        )} */}
 
       </main>
 
