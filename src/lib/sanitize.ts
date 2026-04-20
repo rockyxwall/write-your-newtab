@@ -1,6 +1,6 @@
 // Strips dangerous elements/attributes before storing user-uploaded HTML.
 // Required for Chrome Web Store compliance.
-const DANGEROUS_TAGS = ['script', 'object', 'embed', 'iframe', 'base', 'form']
+const DANGEROUS_TAGS = ['script', 'object', 'embed', 'iframe', 'base']
 
 export function sanitizeHtml(raw: string): string {
   const doc = new DOMParser().parseFromString(raw, 'text/html')
@@ -22,5 +22,5 @@ export function sanitizeHtml(raw: string): string {
       })
   })
 
-  return doc.body.innerHTML
+  return doc.documentElement.outerHTML
 }

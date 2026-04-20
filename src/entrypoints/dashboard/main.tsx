@@ -157,22 +157,36 @@ function Dashboard() {
 
     const reader = new FileReader()
     reader.onload = async (ev) => {
-      const raw = ev.target?.result as string
-      const sanitized = sanitizeHtml(raw)
+      try {
+        const raw = ev.target?.result as string
+        if (!raw) {
+          showStatus('File is empty.', false)
+          return
+        }
 
-      const newTemplate: Template = {
-        id: `user-${Date.now()}`,
-        name: file.name.replace(/\.html$/i, ''),
-        html: sanitized,
-        isBuiltin: false,
-        uploadedAt: new Date().toISOString(),
+        const sanitized = sanitizeHtml(raw)
+
+        const newTemplate: Template = {
+          id: `user-${Date.now()}`,
+          name: file.name.replace(/\.html$/i, ''),
+          html: sanitized,
+          isBuiltin: false,
+          uploadedAt: new Date().toISOString(),
+        }
+
+        const updated = [...userList, newTemplate]
+        await userTemplates.setValue(updated)
+        setUserList(updated)
+        await doActivate(newTemplate)
+        showStatus(`"${newTemplate.name}" uploaded and activated.`, true)
+      } catch (err) {
+        console.error('Upload failed:', err)
+        showStatus('Failed to process or save file.', false)
       }
+    }
 
-      const updated = [...userList, newTemplate]
-      await userTemplates.setValue(updated)
-      setUserList(updated)
-      await doActivate(newTemplate)
-      showStatus(`"${newTemplate.name}" uploaded and activated.`, true)
+    reader.onerror = () => {
+      showStatus('Failed to read file.', false)
     }
 
     reader.readAsText(file)

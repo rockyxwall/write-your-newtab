@@ -8,6 +8,6 @@ export default defineConfig({
       name: 'Write Your NewTab',
       version: '0.2.0',
       action: {}, 
-      permissions: ['tabs', 'storage'],
+      permissions: ['tabs', 'storage', 'unlimitedStorage'],
     },
 });
