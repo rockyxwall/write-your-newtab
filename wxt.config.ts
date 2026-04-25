@@ -6,7 +6,7 @@ export default defineConfig({
   srcDir: 'src',
   manifest: {
       name: 'Write Your NewTab',
-      version: '0.2.0',
+      version: '0.2.1',
       action: {}, 
       permissions: ['tabs', 'storage', 'unlimitedStorage'],
     },
