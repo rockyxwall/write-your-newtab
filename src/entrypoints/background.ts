@@ -1,18 +1,23 @@
 export default defineBackground(() => {
-  // console.log('Hello background!', { id: browser.runtime.id });
+  browser.action.onClicked.addListener(async (activeTab) => {
+    const dashboardUrl = browser.runtime.getURL('/dashboard.html');
 
-  // popup to direct open full page.
-  browser.action.onClicked.addListener(async () => {
-    const url = browser.runtime.getURL('/dashboard.html');
-    const tabs = await browser.tabs.query({ url });
-    if (tabs.length > 0) {
-      browser.tabs.update(tabs[0].id!, { active: true });
-    } else {
-      browser.tabs.create({ url });
+    try {
+      // Try to find if the dashboard is already open
+      const tabs = await browser.tabs.query({ windowType: 'normal' });
+      const existingTab = tabs.find(tab => tab.url === dashboardUrl);
+
+      if (existingTab && existingTab.id !== undefined) {
+        await browser.tabs.update(existingTab.id, { active: true });
+        if (existingTab.windowId !== undefined) {
+          await browser.windows.update(existingTab.windowId, { focused: true });
+        }
+      } else {
+        await browser.tabs.create({ url: dashboardUrl });
+      }
+    } catch (error) {
+      // Fallback: if query fails for any reason, just open a new tab
+      await browser.tabs.create({ url: dashboardUrl });
     }
   });
-
-  // browser.action.onClicked.addListener(() => {
-  //   browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') })
-  // })
 });
