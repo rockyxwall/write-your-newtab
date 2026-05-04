@@ -1,4 +1,4 @@
-# GEMINI.md - WYNTab (Write Your New Tab)
+# GEMINI.md - WYNTab
 
 ## Project Overview
 **WYNTab** is a browser extension that allows users to fully customize their New Tab page by uploading and activating their own HTML templates. It is built using the [WXT (Web Extension Toolbox)](https://wxt.dev/) framework with **React 19**, **TypeScript**, and **Tailwind CSS 4**.

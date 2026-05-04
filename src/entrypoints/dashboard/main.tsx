@@ -1,20 +1,19 @@
 import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
-import { Moon, Sun, Upload, Trash2, Zap, CheckCircle2, LayoutGrid, Sparkles } from 'lucide-react'
+import {
+  Moon, Sun, Upload, Trash2, Zap,
+  CheckCircle2, LayoutGrid, Sparkles,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardPreview } from '@/components/ui/card'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
 import { activeTemplateHtml, activeTemplateId, userTemplates } from '@/lib/storage'
 import { sanitizeHtml } from '@/lib/sanitize'
 
 // ─── Dark mode hook ───────────────────────────────────────────────────────────
+// Reads initial state from <html> class (set by theme-init.js before render)
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
-    return localStorage.getItem('wyn-theme') === 'dark' ||
-      (!localStorage.getItem('wyn-theme') &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    return document.documentElement.classList.contains('dark')
   })
 
   useEffect(() => {
@@ -23,6 +22,37 @@ function useDarkMode() {
   }, [dark])
 
   return [dark, setDark] as const
+}
+
+// ─── Preview component ────────────────────────────────────────────────────────
+function Preview({ html }: { html?: string }) {
+  const [blobUrl, setBlobUrl] = useState('')
+
+  useEffect(() => {
+    if (!html) return
+    const blob = new Blob([html], { type: 'text/html' })
+    const url = URL.createObjectURL(blob)
+    setBlobUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [html])
+
+  return (
+    <div className="relative aspect-video w-full overflow-hidden bg-muted/30 border-b border-border transition-colors group-hover:bg-muted/50">
+      {blobUrl ? (
+        <iframe
+          src={blobUrl}
+          className="absolute inset-0 h-[400%] w-[400%] origin-top-left scale-25 pointer-events-none border-none select-none"
+          title="Preview"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-muted-foreground/40 font-mono text-[10px] uppercase tracking-wider">
+          No Preview
+        </div>
+      )}
+      {/* Click barrier over iframe */}
+      <div className="absolute inset-0 bg-transparent z-10" />
+    </div>
+  )
 }
 
 // ─── Template Card ────────────────────────────────────────────────────────────
@@ -38,52 +68,71 @@ function TemplateCard({
   onDelete?: () => void
 }) {
   return (
-    <Card className={cn(
-      "h-full flex flex-col group",
-      isActive && "border-primary/50 shadow-lg shadow-primary/5"
-    )}>
-      <CardPreview html={template.html} />
-      
-      <CardHeader className="p-3 pb-0 space-y-1">
-        <div className="flex items-start justify-between gap-2">
-          <CardTitle className="truncate text-[11px] font-bold leading-tight uppercase tracking-tight">
-            {template.name}
-          </CardTitle>
-          <Badge variant={template.isBuiltin ? "secondary" : "outline"} className="shrink-0 text-[8px] px-1 py-0 h-3.5 uppercase font-black">
-            {template.isBuiltin ? 'Built-in' : 'Custom'}
-          </Badge>
-        </div>
-      </CardHeader>
+    <div
+      className={cn(
+        'group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground transition-all duration-300',
+        'hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 active:scale-[0.99]',
+        isActive && 'border-primary/50 shadow-lg shadow-primary/5'
+      )}
+    >
+      <Preview html={template.html} />
 
-      <CardContent className="p-3 py-2 flex-grow">
+      {/* Title + Badge */}
+      <div className="p-3 pb-0 space-y-1">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="truncate text-[11px] font-bold leading-tight uppercase tracking-tight">
+            {template.name}
+          </h3>
+          <span
+            className={cn(
+              'shrink-0 inline-flex items-center justify-center rounded-full border px-1.5 py-0 h-4 text-[8px] font-black uppercase tracking-wide transition-colors',
+              template.isBuiltin
+                ? 'bg-secondary text-secondary-foreground border-transparent'
+                : 'border-border text-foreground'
+            )}
+          >
+            {template.isBuiltin ? 'Built-in' : 'Custom'}
+          </span>
+        </div>
+      </div>
+
+      {/* Active indicator */}
+      <div className="px-3 py-2 flex-grow">
         {isActive ? (
           <div className="flex items-center gap-1 text-[9px] text-green-600 dark:text-green-400 font-black uppercase tracking-widest">
             <CheckCircle2 size={10} strokeWidth={3} />
             <span>Active</span>
           </div>
         ) : (
-          <div className="h-3" /> 
+          <div className="h-3" />
         )}
-      </CardContent>
+      </div>
 
-      <CardFooter className="p-3 pt-0 gap-1.5 mt-auto">
+      {/* Actions */}
+      <div className="p-3 pt-0 mt-auto flex items-center gap-1.5">
         {isActive ? (
           <div className="flex-1 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground h-8 px-3 text-[10px] font-bold uppercase tracking-wider">
             Selected
           </div>
         ) : (
-          <Button size="sm" className="flex-1 h-8 text-[10px] font-bold uppercase tracking-wider cursor-pointer" onClick={onActivate}>
+          <button
+            onClick={onActivate}
+            className="flex-1 inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground h-8 px-3 text-[10px] font-bold uppercase tracking-wider shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px"
+          >
             <Zap size={10} className="mr-1" />
             Activate
-          </Button>
+          </button>
         )}
         {!template.isBuiltin && onDelete && (
-          <Button size="sm" variant="destructive" className="h-8 w-8 p-0 shrink-0 cursor-pointer" onClick={onDelete}>
+          <button
+            onClick={onDelete}
+            className="inline-flex items-center justify-center rounded-lg h-8 w-8 p-0 shrink-0 cursor-pointer bg-destructive/10 text-destructive-foreground hover:bg-destructive/20 transition-all active:translate-y-px"
+          >
             <Trash2 size={12} />
-          </Button>
+          </button>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
 
@@ -194,18 +243,19 @@ function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-dvh bg-background text-foreground transition-colors duration-300">
 
       {/* ── Header ── */}
       <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-md z-20">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-primary p-1.5 rounded-lg">
-              <Sparkles size={18} className="text-primary-foreground" />
+              <Sparkles size={16} className="text-primary-foreground sm:hidden" />
+              <Sparkles size={18} className="text-primary-foreground hidden sm:block" />
             </div>
-            <span className="text-lg font-black uppercase tracking-tighter italic">WYNTab</span>
+            <span className="text-base sm:text-lg font-black uppercase tracking-tighter italic">WYNTab</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <input
               type="file"
               ref={fileRef}
@@ -213,40 +263,37 @@ function Dashboard() {
               accept=".html"
               onChange={handleFile}
             />
-            <Button
-              variant="default"
-              size="sm"
+            <button
               onClick={() => fileRef.current?.click()}
-              className="font-bold uppercase tracking-wider text-[10px] h-9 px-4 rounded-full"
+              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px"
             >
-              <Upload size={14} className="mr-2" />
-              Upload HTML
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
+              <Upload size={14} className="mr-1.5 sm:mr-2" />
+              <span className="hidden xs:inline">Upload HTML</span>
+              <span className="xs:hidden">Upload</span>
+            </button>
+            <button
               onClick={() => setDark(!dark)}
               aria-label="Toggle dark mode"
-              className="rounded-full h-9 w-9"
+              className="inline-flex items-center justify-center rounded-full border border-border bg-background h-8 w-8 sm:h-9 sm:w-9 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px"
             >
               {dark ? <Sun size={15} /> : <Moon size={15} />}
-            </Button>
+            </button>
           </div>
         </div>
       </header>
 
       {/* ── Content ── */}
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-16">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-16">
 
         {/* Built-in templates */}
-        <section className="space-y-6">
+        <section className="space-y-4 sm:space-y-6">
           <div className="flex items-center gap-2 border-b border-border/50 pb-2">
             <LayoutGrid size={14} className="text-muted-foreground" />
             <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
               Built-in Gallery
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {builtins.map((t) => (
               <TemplateCard
                 key={t.id}
@@ -260,14 +307,14 @@ function Dashboard() {
 
         {/* User templates */}
         {userList.length > 0 && (
-          <section className="space-y-6">
+          <section className="space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2 border-b border-border/50 pb-2">
               <Upload size={14} className="text-muted-foreground" />
               <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
                 Your Custom Uploads
               </h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {userList.map((t) => (
                 <TemplateCard
                   key={t.id}
@@ -284,7 +331,7 @@ function Dashboard() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="max-w-4xl mx-auto px-6 py-12 border-t border-border/50">
+      <footer className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 border-t border-border/50">
         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest text-center">
           Crafted for your perfect new tab experience
         </p>
@@ -292,9 +339,9 @@ function Dashboard() {
 
       {/* ── Status toast ── */}
       {status && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className={cn(
-            'rounded-full border px-6 py-3 text-[11px] font-bold uppercase tracking-widest shadow-2xl backdrop-blur-xl whitespace-nowrap',
+            'rounded-full border px-4 sm:px-6 py-2.5 sm:py-3 text-[11px] font-bold uppercase tracking-widest shadow-2xl backdrop-blur-xl whitespace-nowrap',
             status.ok
               ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400'
               : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400'

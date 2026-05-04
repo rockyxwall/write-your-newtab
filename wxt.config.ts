@@ -5,8 +5,8 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   srcDir: 'src',
   manifest: {
-      name: 'Write Your NewTab',
-      version: '0.2.0',
+      name: 'WYNTab',
+      version: '0.2.1',
       action: {}, 
       permissions: ['tabs', 'storage', 'unlimitedStorage'],
     },
