@@ -1,72 +1,49 @@
-<div align="center">
+[![Issues](https://img.shields.io/github/issues/rockyxwall/WYNTab.svg?style=flat-square&logo=github&logoColor=white)](https://github.com/rockyxwall/WYNTab/issues)
+[![License](https://img.shields.io/github/license/rockyxwall/WYNTab.svg?style=flat-square)](LICENSE)
 
-<a href="https://github.com/rockyxwall/write-your-newtab">
-    <img src="./public/icon/128.png" alt="WYNTab logo" height="128px" width="128px" />
-</a>
+# WYNTab (Write Your NewTab)
 
-# WYNTab
+**WYNTab** is a powerful browser extension that enables you to fully customize your New Tab page by uploading and activating your own HTML templates.
 
-</div>
+It allows you to use your own creations—whether it's a minimalist clock, a personal dashboard, or a complex web app—as your centralized New Tab interface.
 
-<div align="center">
+#### **Core Features**
 
-A fully customizable browser extension that lets you write and activate your own New Tab page.
+- **Custom HTML Uploads**: Upload any HTML file and see it instantly as your New Tab.
+- **Built-in Templates**: Start quickly with pre-configured templates like "Focus" and "Terminal".
+- **Sandboxed Security**: Your templates run in a safe, sandboxed environment to protect your privacy and security.
+- **Modern Dashboard**: Manage your template library with a sleek React-powered interface.
 
-[![Framework: WXT](https://img.shields.io/badge/framework-WXT-blue.svg?labelColor=27303D)](https://wxt.dev/)
-[![Library: React 19](https://img.shields.io/badge/library-React_19-61DAFB.svg?labelColor=27303D&logo=react)](https://react.dev/)
-[![Styling: Tailwind CSS 4](https://img.shields.io/badge/styling-Tailwind_CSS_4-38B2AC.svg?labelColor=27303D&logo=tailwind-css)](https://tailwindcss.com/)
+#### **Built-in Templates**
 
-<!-- <img src="./.github/readme-images/screens.gif" alt="WYNTab screenshots" /> -->
+| Template | Description |
+| :--- | :--- |
+| **Focus** | A minimalist distraction-free interface for productivity. |
+| **Terminal** | A geeky terminal-style dashboard for CLI lovers. |
+| **Clock** | A simple, elegant time-focused display. |
 
-## Overview
+#### **Download**
 
-**WYNTab** is a browser extension built with the [WXT](https://wxt.dev/) framework that allows users to fully customize their New Tab experience. Instead of being stuck with a static or limited New Tab page, you can upload your own HTML, CSS, and JavaScript templates to create a personalized dashboard, a minimalist clock, or anything you can imagine.
+[![Chrome](https://img.shields.io/chrome-web-store/users/hbfabaimiglbfjhcppfedgjkpfgabiff.svg?style=flat-square&label=Chrome&logo=google%20chrome&logoColor=white)](https://chromewebstore.google.com/detail/write-your-newtab/hbfabaimiglbfjhcppfedgjkpfgabiff)
+[![Firefox](https://img.shields.io/amo/users/wyntab.svg?style=flat-square&label=Firefox&logo=firefox&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/wyntab)
 
-## Features
+## What more can it do?
 
-<div align="left">
+**WYNTab Dashboard**
+- Manage multiple templates easily in one place.
+- Preview your templates before setting them live.
+- Seamlessly switch between different New Tab designs with one click.
 
-<details open="">
-    <summary><h3>Core Functionality</h3></summary>
+**Security & Privacy**
+- **Automatic Sanitization**: Security layer to strip dangerous elements from user-uploaded HTML.
+- **Local Storage**: Your templates and settings are stored locally in your browser, never sent to a server.
 
-- [x] **Built-in Templates**: Comes with pre-configured templates like "Focus" and "Terminal".
-- [x] **Sandboxed Rendering**: Templates are rendered inside a sandboxed `iframe` using `srcDoc` for security.
-- [ ] **Custom HTML Templates**: Ability to upload and manage your own HTML files.
-- [ ] **Automatic Sanitization**: Security layer to strip dangerous elements (scripts, nested iframes) from user uploads.
-- [ ] **Live Previews**: Preview templates in the dashboard before activating them.
-- [ ] **Template Editor**: A built-in code editor to tweak templates directly in the browser.
+**Developer Friendly**
+- Built with the latest tech: **WXT**, **React 19**, and **Tailwind CSS 4**.
+- Add your own built-in templates by simply dropping HTML files into the `src/builtins/` directory.
 
-</details>
+## Want to Contribute?
 
-</div>
+Found a bug or have a feature request? Let me know on [GitHub Issues](https://github.com/rockyxwall/WYNTab/issues).
 
-## Getting Started
-
-### Prerequisites
-[Bun](https://bun.sh/) (Recommended) or Node.js
-
-### Development
-Start the development server with hot-reloading:
-```bash
-bun dev
-```
-
-### Production Build
-Build the extension for production:
-```bash
-bun build
-```
-
-### Packaging
-Create a zip file for distribution:
-```bash
-bun zip
-```
-
----
-
-<div align="center">
-Made with ❤️ for a better New Tab experience.
-</div>
-
-</div>
+How to add a new builtin template? How to build? Check the [GEMINI.md](GEMINI.md) for technical documentation.
