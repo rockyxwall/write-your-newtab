@@ -1,5 +1,4 @@
 [![Issues](https://img.shields.io/github/issues/rockyxwall/write-your-newtab.svg?style=flat-square&logo=github&logoColor=white)](https://github.com/rockyxwall/write-your-newtab/issues)
-[![License](https://img.shields.io/github/license/rockyxwall/write-your-newtab.svg?style=flat-square)](LICENSE)
 
 # WYNTab (Write Your NewTab)
 
