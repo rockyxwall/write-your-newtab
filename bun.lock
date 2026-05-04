@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "wxt-react-starter",
+      "name": "wyntab",
       "dependencies": {
         "@tailwindcss/postcss": "^4.2.2",
         "@wxt-dev/storage": "^1.2.8",
