@@ -1,5 +1,4 @@
-[![Issues](https://img.shields.io/github/issues/rockyxwall/WYNTab.svg?style=flat-square&logo=github&logoColor=white)](https://github.com/rockyxwall/WYNTab/issues)
-[![License](https://img.shields.io/github/license/rockyxwall/WYNTab.svg?style=flat-square)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/rockyxwall/write-your-newtab.svg?style=flat-square&logo=github&logoColor=white)](https://github.com/rockyxwall/write-your-newtab/issues)
 
 # WYNTab (Write Your NewTab)
 
@@ -25,7 +24,6 @@ It allows you to use your own creations—whether it's a minimalist clock, a per
 #### **Download**
 
 [![Chrome](https://img.shields.io/chrome-web-store/users/hbfabaimiglbfjhcppfedgjkpfgabiff.svg?style=flat-square&label=Chrome&logo=google%20chrome&logoColor=white)](https://chromewebstore.google.com/detail/write-your-newtab/hbfabaimiglbfjhcppfedgjkpfgabiff)
-[![Firefox](https://img.shields.io/amo/users/wyntab.svg?style=flat-square&label=Firefox&logo=firefox&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/wyntab)
 
 ## What more can it do?
 
@@ -44,6 +42,6 @@ It allows you to use your own creations—whether it's a minimalist clock, a per
 
 ## Want to Contribute?
 
-Found a bug or have a feature request? Let me know on [GitHub Issues](https://github.com/rockyxwall/WYNTab/issues).
+Found a bug or have a feature request? Let me know on [GitHub Issues](https://github.com/rockyxwall/write-your-newtab/issues).
 
 How to add a new builtin template? How to build? Check the [GEMINI.md](GEMINI.md) for technical documentation.
