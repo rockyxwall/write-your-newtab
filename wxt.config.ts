@@ -10,11 +10,11 @@ export default defineConfig({
       action: {}, 
       permissions: ['tabs', 'storage', 'unlimitedStorage'],
       icons: {
-        '16': 'favicon/favicon-96x96.png',
-        '32': 'favicon/favicon-96x96.png',
-        '48': 'favicon/favicon-96x96.png',
-        '96': 'favicon/favicon-96x96.png',
-        '128': 'favicon/web-app-manifest-192x192.png',
+        '16': 'icon/16.png',
+        '32': 'icon/32.png',
+        '48': 'icon/48.png',
+        '96': 'icon/96.png',
+        '128': 'icon/128.png',
       },
     },
 });
