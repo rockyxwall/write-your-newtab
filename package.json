@@ -1,6 +1,6 @@
 {
   "name": "wyntab",
-  "description": "manifest.json description",
+  "description": "Write Your NewTab, lets you replace the default new tab page with your own custom HTML",
   "private": true,
   "version": "0.0.0",
   "type": "module",

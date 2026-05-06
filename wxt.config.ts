@@ -6,6 +6,7 @@ export default defineConfig({
   srcDir: 'src',
   manifest: {
       name: 'WYNTab',
+      description: 'Write Your NewTab, lets you replace the default new tab page with your own custom HTML',
       version: '0.2.1',
       action: {}, 
       permissions: ['tabs', 'storage', 'unlimitedStorage'],
