@@ -23,7 +23,7 @@ It allows you to use your own creations—whether it's a minimalist clock, a per
 
 #### **Download**
 
-[![Chrome](https://img.shields.io/chrome-web-store/users/hbfabaimiglbfjhcppfedgjkpfgabiff.svg?style=flat-square&label=Chrome&logo=google%20chrome&logoColor=white)](https://chromewebstore.google.com/detail/write-your-newtab/hbfabaimiglbfjhcppfedgjkpfgabiff)
+[![Chrome](https://img.shields.io/chrome-web-store/users/hbfabaimiglbfjhcppfedgjkpfgabiff.svg?style=flat-square&label=Chrome&logo=google%20chrome&logoColor=white)](https://chromewebstore.google.com/detail/wyntab/hbfabaimiglbfjhcppfedgjkpfgabiff)
 
 ## What more can it do?
 
