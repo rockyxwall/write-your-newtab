@@ -5,6 +5,7 @@
 - **UI Refinement**: Standardized corner roundness to `rounded-2xl` (16px) across all Dashboard cards, modals, and sidebar elements for a more balanced professional aesthetic.
 - **CSP Compatibility Fix**: Removed inline scripts from all built-in templates to ensure full compatibility with strict browser extension Content Security Policies (MV3).
 - **Template Stability**: Templates like Matrix and Pomodoro now use static placeholders, preventing script-block errors on the New Tab page.
+- **Premium Card Design**: Overhauled the template gallery cards with a new high-polish aesthetic featuring external corner glow accents, refined typography, and data-driven metadata layouts.
 - **Brand Consistency**: Replaced the generic Sparkles icon with the official extension icon across the Dashboard and Onboarding screens.
 - **Builtin Expansion**: Added 3 new high-quality, purely static (HTML/CSS) templates:
     - **Links**: A modern bento-style grid for your favorite shortcuts.
