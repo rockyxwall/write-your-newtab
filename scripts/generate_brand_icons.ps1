@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-$sourcePath = "public/example/128.png"
+$sourcePath = "public/icon/example/128.png"
 if (-not (Test-Path $sourcePath)) {
     Write-Error "Source icon not found at $sourcePath"
     exit
