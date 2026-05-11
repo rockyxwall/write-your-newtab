@@ -4,7 +4,7 @@ import {
   Moon, Sun, Upload, Trash2, Zap,
   CheckCircle2, LayoutGrid, Sparkles,
   Download, FileUp, Copy, Pencil, Check, X,
-  Code2, Save, ArrowLeft
+  Code2, Save, ArrowLeft, Menu, Plus, ChevronDown
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
@@ -221,6 +221,9 @@ function Dashboard() {
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
   const [editorValue, setEditorValue] = useState('')
   
+  const [showMenu, setShowMenu] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  
   const fileRef = useRef<HTMLInputElement>(null)
   const backupRef = useRef<HTMLInputElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -229,6 +232,16 @@ function Dashboard() {
 
   useEffect(() => {
     refreshData()
+  }, [])
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
   async function refreshData() {
@@ -502,20 +515,46 @@ function Dashboard() {
             <input type="file" ref={fileRef} className="hidden" accept=".html" onChange={handleFile} />
             <input type="file" ref={backupRef} className="hidden" accept=".json" onChange={handleImport} />
             
-            <div className="flex items-center bg-muted/50 rounded-full p-1 gap-1 border border-border/50">
-               <button onClick={handleExport} title="Export Backup" className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
-                <Download size={14} />
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px gap-1.5"
+              >
+                <Plus size={14} />
+                <span className="hidden xs:inline">Manage</span>
+                <span className="xs:hidden">Add</span>
+                <ChevronDown size={12} className={cn("transition-transform duration-200", showMenu && "rotate-180")} />
               </button>
-              <button onClick={() => backupRef.current?.click()} title="Import Backup" className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
-                <FileUp size={14} />
-              </button>
-            </div>
 
-            <button onClick={() => fileRef.current?.click()} className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px">
-              <Upload size={14} className="mr-1.5 sm:mr-2" />
-              <span className="hidden xs:inline">Upload HTML</span>
-              <span className="xs:hidden">Upload</span>
-            </button>
+              {showMenu && (
+                <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-border bg-card text-card-foreground shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                  <div className="p-1.5">
+                    <button
+                      onClick={() => { setShowMenu(false); fileRef.current?.click(); }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors text-left cursor-pointer"
+                    >
+                      <Upload size={14} className="text-muted-foreground" />
+                      Upload HTML
+                    </button>
+                    <div className="h-px bg-border/50 my-1" />
+                    <button
+                      onClick={() => { setShowMenu(false); backupRef.current?.click(); }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors text-left cursor-pointer"
+                    >
+                      <FileUp size={14} className="text-muted-foreground" />
+                      Import Backup
+                    </button>
+                    <button
+                      onClick={() => { setShowMenu(false); handleExport(); }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors text-left cursor-pointer"
+                    >
+                      <Download size={14} className="text-muted-foreground" />
+                      Export Backup
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             <button onClick={() => setDark(!dark)} className="inline-flex items-center justify-center rounded-full border border-border bg-background h-8 w-8 sm:h-9 sm:w-9 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
               {dark ? <Sun size={15} /> : <Moon size={15} />}
             </button>
