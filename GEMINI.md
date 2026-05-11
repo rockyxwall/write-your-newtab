@@ -5,7 +5,8 @@
 
 ### Core Components
 - **New Tab (`src/entrypoints/newtab/`)**: The custom new tab page. It retrieves the active template's HTML from `browser.storage.local` and renders it inside an `iframe` using the `srcDoc` attribute. This avoids `blob:` URL blocks by extension CSP while allowing scripts to run in a sandboxed environment.
-- **Dashboard (`src/entrypoints/dashboard/`)**: A React-based interface for managing templates. Users can upload HTML files, preview them (using `blob:` URLs), and set them as the active new tab. It includes **Export/Import** functionality for data portability.
+- **Dashboard (`src/entrypoints/dashboard/`)**: A React-based interface for managing templates. Users can upload HTML files, preview them (using `blob:` URLs), and set them as the active new tab. It includes **Export/Import** functionality, **Template Duplication/Renaming**, and an **Integrated Code Editor** (CodeMirror 6) for direct HTML/CSS modification.
+- **Editor (`src/components/Editor.tsx`)**: A CodeMirror 6 based component used in the Dashboard for editing template source code with live preview support.
 - **Onboarding (`src/entrypoints/onboarding/`)**: A welcome page that opens automatically on installation to guide new users.
 - **Background (`src/entrypoints/background.ts`)**: Handles the extension's "action" (icon click) and listens for `onInstalled` events to trigger the onboarding flow.
 - **Lib (`src/lib/`)**: Shared utility functions and core logic:

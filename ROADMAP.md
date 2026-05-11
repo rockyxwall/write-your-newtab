@@ -7,13 +7,13 @@ This roadmap outlines the planned features and improvements for WYNTab, ranked b
 *   **[x] Onboarding Experience:** A "Welcome" page now opens automatically upon installation to guide users.
 *   **[x] Project Documentation:** Created `docs/TEMPLATE_GUIDE.md` explaining HTML/CSS limitations and template creation.
 
-## Phase 2: Enhanced User Experience (P1) v0.3.8
-*   **[ ] Integrated Code Editor:** Add a built-in code editor (e.g., Monaco or CodeMirror) to the Dashboard. This allows users to "Write" their New Tab directly in the browser with live-reloading previews.
-*   **[ ] Template Management Improvements:** 
-    *   **Rename:** Change the name of uploaded templates without re-uploading.
-    *   **Duplicate:** Clone existing templates (including built-ins) to use as a starting point.
-    *   **Categories/Tags:** Organize templates by style or complexity.
-*   **[ ] Versioning:** Track extension version in the Dashboard footer and notify users of major updates.
+## Phase 2: Enhanced User Experience (P1 - Completed ✅) v0.3.8
+*   **[x] Integrated Code Editor:** Added a built-in CodeMirror editor to the Dashboard with live previews.
+*   **[x] Template Management Improvements:** 
+    *   **Rename:** Users can now rename custom templates.
+    *   **Duplicate:** Users can clone any template (including built-ins).
+*   **[x] Versioning:** Extension version is now visible in the Dashboard footer.
+
 
 ## Phase 3: Professional Standards & Reach (P2) v0.4.0
 *   **[ ] Internationalization (i18n):** Move all hardcoded strings to `_locales/` to support multiple languages.

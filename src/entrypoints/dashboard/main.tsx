@@ -3,12 +3,14 @@ import { useEffect, useRef, useState } from 'react'
 import {
   Moon, Sun, Upload, Trash2, Zap,
   CheckCircle2, LayoutGrid, Sparkles,
-  Download, FileUp
+  Download, FileUp, Copy, Pencil, Check, X,
+  Code2, Save, ArrowLeft
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
 import { activeTemplateHtml, activeTemplateId, userTemplates } from '@/lib/storage'
 import { sanitizeHtml } from '@/lib/sanitize'
+import { Editor } from '@/components/Editor'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface BackupData {
@@ -18,7 +20,6 @@ interface BackupData {
 }
 
 // ─── Dark mode hook ───────────────────────────────────────────────────────────
-// Reads initial state from <html> class (set by theme-init.js before render)
 function useDarkMode() {
   const [dark, setDark] = useState(() => {
     return document.documentElement.classList.contains('dark')
@@ -57,7 +58,6 @@ function Preview({ html }: { html?: string }) {
           No Preview
         </div>
       )}
-      {/* Click barrier over iframe */}
       <div className="absolute inset-0 bg-transparent z-10" />
     </div>
   )
@@ -69,12 +69,28 @@ function TemplateCard({
   isActive,
   onActivate,
   onDelete,
+  onRename,
+  onDuplicate,
+  onEditCode,
 }: {
   template: Template
   isActive: boolean
   onActivate: () => void
   onDelete?: () => void
+  onRename?: (newName: string) => void
+  onDuplicate: () => void
+  onEditCode: () => void
 }) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editName, setEditName] = useState(template.name)
+
+  const handleRename = () => {
+    if (editName.trim() && editName !== template.name && onRename) {
+      onRename(editName.trim())
+    }
+    setIsEditing(false)
+  }
+
   return (
     <div
       className={cn(
@@ -88,9 +104,43 @@ function TemplateCard({
       {/* Title + Badge */}
       <div className="p-3 pb-0 space-y-1">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="truncate text-[11px] font-bold leading-tight uppercase tracking-tight">
-            {template.name}
-          </h3>
+          {isEditing ? (
+            <div className="flex items-center gap-1 flex-1">
+              <input
+                autoFocus
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleRename()
+                  if (e.key === 'Escape') {
+                    setIsEditing(false)
+                    setEditName(template.name)
+                  }
+                }}
+                className="w-full bg-muted border border-primary/30 rounded px-1.5 py-0.5 text-[11px] font-bold outline-none"
+              />
+              <button onClick={handleRename} className="text-green-500 hover:text-green-600 transition-colors">
+                <Check size={12} />
+              </button>
+              <button onClick={() => setIsEditing(false)} className="text-red-500 hover:text-red-600 transition-colors">
+                <X size={12} />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 truncate flex-1 group/name">
+              <h3 className="truncate text-[11px] font-bold leading-tight uppercase tracking-tight">
+                {template.name}
+              </h3>
+              {!template.isBuiltin && onRename && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
+                  className="opacity-0 group-hover/name:opacity-100 p-0.5 hover:bg-muted rounded transition-all"
+                >
+                  <Pencil size={10} className="text-muted-foreground" />
+                </button>
+              )}
+            </div>
+          )}
           <span
             className={cn(
               'shrink-0 inline-flex items-center justify-center rounded-full border px-1.5 py-0 h-4 text-[8px] font-black uppercase tracking-wide transition-colors',
@@ -104,8 +154,8 @@ function TemplateCard({
         </div>
       </div>
 
-      {/* Active indicator */}
-      <div className="px-3 py-2 flex-grow">
+      {/* Active indicator + Duplicate/Edit */}
+      <div className="px-3 py-2 flex items-center justify-between">
         {isActive ? (
           <div className="flex items-center gap-1 text-[9px] text-green-600 dark:text-green-400 font-black uppercase tracking-widest">
             <CheckCircle2 size={10} strokeWidth={3} />
@@ -114,6 +164,24 @@ function TemplateCard({
         ) : (
           <div className="h-3" />
         )}
+        <div className="flex items-center gap-1">
+          {!template.isBuiltin && (
+             <button
+              onClick={onEditCode}
+              title="Edit Code"
+              className="p-1 hover:bg-muted rounded transition-all text-muted-foreground hover:text-primary"
+            >
+              <Code2 size={12} />
+            </button>
+          )}
+          <button
+            onClick={onDuplicate}
+            title="Duplicate Template"
+            className="p-1 hover:bg-muted rounded transition-all text-muted-foreground hover:text-primary"
+          >
+            <Copy size={12} />
+          </button>
+        </div>
       </div>
 
       {/* Actions */}
@@ -150,6 +218,9 @@ function Dashboard() {
   const [activeId, setActiveId] = useState('')
   const [userList, setUserList] = useState<Template[]>([])
   const [status, setStatus] = useState<{ msg: string; ok: boolean } | null>(null)
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
+  const [editorValue, setEditorValue] = useState('')
+  
   const fileRef = useRef<HTMLInputElement>(null)
   const backupRef = useRef<HTMLInputElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -204,6 +275,47 @@ function Dashboard() {
       }
     }
     showStatus('Template deleted.', true)
+  }
+
+  async function doRename(id: string, newName: string) {
+    const updated = userList.map(t => t.id === id ? { ...t, name: newName } : t)
+    await userTemplates.setValue(updated)
+    setUserList(updated)
+    showStatus('Template renamed.', true)
+  }
+
+  async function doDuplicate(template: Template) {
+    const newTemplate: Template = {
+      ...template,
+      id: `user-${Date.now()}`,
+      name: `${template.name} (Copy)`,
+      isBuiltin: false,
+      uploadedAt: new Date().toISOString(),
+    }
+    const updated = [...userList, newTemplate]
+    await userTemplates.setValue(updated)
+    setUserList(updated)
+    showStatus(`Duplicated "${template.name}".`, true)
+  }
+
+  async function doSaveCode() {
+    if (!editingTemplate) return
+    
+    const sanitized = sanitizeHtml(editorValue)
+    const updated = userList.map(t => 
+      t.id === editingTemplate.id ? { ...t, html: sanitized } : t
+    )
+    
+    await userTemplates.setValue(updated)
+    setUserList(updated)
+    
+    // If we're editing the active template, update the active HTML too
+    if (activeId === editingTemplate.id) {
+      await activeTemplateHtml.setValue(sanitized)
+    }
+    
+    setEditingTemplate(null)
+    showStatus('Changes saved.', true)
   }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -307,69 +419,115 @@ function Dashboard() {
     e.target.value = ''
   }
 
-  return (
-    <div className="min-h-dvh bg-background text-foreground transition-colors duration-300">
+  // ─── Editor View ────────────────────────────────────────────────────────────
+  if (editingTemplate) {
+    return (
+      <div className={cn("min-h-dvh bg-background text-foreground flex flex-col transition-colors duration-300 font-sans", dark && "dark")}>
+        <header className="border-b border-border h-14 sm:h-16 flex items-center justify-between px-4 sm:px-6 shrink-0">
+          <div className="flex items-center gap-4">
+             <button 
+              onClick={() => setEditingTemplate(null)}
+              className="p-2 hover:bg-muted rounded-full transition-all"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground leading-none mb-1">Editing Template</span>
+              <span className="text-sm font-bold truncate max-w-[200px]">{editingTemplate.name}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setEditingTemplate(null)}
+              className="inline-flex items-center justify-center rounded-full border border-border bg-background h-9 px-4 text-[11px] font-bold uppercase tracking-wider hover:bg-muted transition-all"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={doSaveCode}
+              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground h-9 px-5 text-[11px] font-bold uppercase tracking-wider shadow-lg hover:bg-primary/90 transition-all active:scale-95"
+            >
+              <Save size={14} className="mr-2" />
+              Save Changes
+            </button>
+          </div>
+        </header>
+        <main className="flex-grow flex flex-col md:flex-row overflow-hidden bg-muted/20">
+          {/* Code Editor Panel */}
+          <div className="flex-1 flex flex-col p-4 sm:p-6 overflow-hidden min-h-[50vh] md:min-h-0">
+            <div className="flex items-center justify-between mb-2">
+               <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+                <Code2 size={12} /> Source HTML
+               </h2>
+            </div>
+            <div className="flex-grow overflow-hidden">
+               <Editor value={editingTemplate.html} onChange={setEditorValue} darkMode={dark} />
+            </div>
+          </div>
+          
+          {/* Live Preview Panel */}
+          <div className="flex-1 border-t md:border-t-0 md:border-l border-border flex flex-col p-4 sm:p-6 overflow-hidden">
+             <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1.5">
+               <Sparkles size={12} /> Live Preview
+             </h2>
+             <div className="flex-grow bg-card rounded-xl border border-border overflow-hidden shadow-2xl relative">
+                <iframe 
+                  srcDoc={editorValue} 
+                  className="absolute inset-0 w-full h-full border-none"
+                  title="Live Preview"
+                  sandbox="allow-scripts allow-same-origin allow-forms"
+                />
+             </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
-      {/* ── Header ── */}
+  // ─── Dashboard View ─────────────────────────────────────────────────────────
+  return (
+    <div className="min-h-dvh bg-background text-foreground transition-colors duration-300 font-sans">
       <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-md z-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-primary p-1.5 rounded-lg">
-              <Sparkles size={16} className="text-primary-foreground sm:hidden" />
-              <Sparkles size={18} className="text-primary-foreground hidden sm:block" />
+              <Sparkles size={16} className="text-primary-foreground" />
             </div>
-            <span className="text-base sm:text-lg font-black uppercase tracking-tighter italic">WYNTab</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-base sm:text-lg font-black tracking-tighter italic leading-none">WYNTab</span>
+              <span className="text-[9px] font-black text-muted-foreground/40 leading-none ml-0.5">v{browser.runtime.getManifest().version}</span>
+            </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <input type="file" ref={fileRef} className="hidden" accept=".html" onChange={handleFile} />
             <input type="file" ref={backupRef} className="hidden" accept=".json" onChange={handleImport} />
             
             <div className="flex items-center bg-muted/50 rounded-full p-1 gap-1 border border-border/50">
-               <button
-                onClick={handleExport}
-                title="Export Backup"
-                className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px"
-              >
+               <button onClick={handleExport} title="Export Backup" className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
                 <Download size={14} />
               </button>
-              <button
-                onClick={() => backupRef.current?.click()}
-                title="Import Backup"
-                className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px"
-              >
+              <button onClick={() => backupRef.current?.click()} title="Import Backup" className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
                 <FileUp size={14} />
               </button>
             </div>
 
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px"
-            >
+            <button onClick={() => fileRef.current?.click()} className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px">
               <Upload size={14} className="mr-1.5 sm:mr-2" />
               <span className="hidden xs:inline">Upload HTML</span>
               <span className="xs:hidden">Upload</span>
             </button>
-            <button
-              onClick={() => setDark(!dark)}
-              aria-label="Toggle dark mode"
-              className="inline-flex items-center justify-center rounded-full border border-border bg-background h-8 w-8 sm:h-9 sm:w-9 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px"
-            >
+            <button onClick={() => setDark(!dark)} className="inline-flex items-center justify-center rounded-full border border-border bg-background h-8 w-8 sm:h-9 sm:w-9 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
               {dark ? <Sun size={15} /> : <Moon size={15} />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* ── Content ── */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-16">
-
-        {/* Built-in templates */}
         <section className="space-y-4 sm:space-y-6">
           <div className="flex items-center gap-2 border-b border-border/50 pb-2">
             <LayoutGrid size={14} className="text-muted-foreground" />
-            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-              Built-in Gallery
-            </h2>
+            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Built-in Gallery</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {builtins.map((t) => (
@@ -378,19 +536,23 @@ function Dashboard() {
                 template={t}
                 isActive={t.id === activeId}
                 onActivate={() => doActivate(t)}
+                onDuplicate={() => doDuplicate(t)}
+                onEditCode={() => {
+                   // Builtins can't be edited directly, duplicate first
+                   doDuplicate(t).then(() => {
+                      showStatus('Duplicated builtin for editing.', true)
+                   })
+                }}
               />
             ))}
           </div>
         </section>
 
-        {/* User templates */}
         {userList.length > 0 && (
           <section className="space-y-4 sm:space-y-6">
             <div className="flex items-center gap-2 border-b border-border/50 pb-2">
               <Upload size={14} className="text-muted-foreground" />
-              <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-                Your Custom Uploads
-              </h2>
+              <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Your Custom Uploads</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {userList.map((t) => (
@@ -400,35 +562,32 @@ function Dashboard() {
                   isActive={t.id === activeId}
                   onActivate={() => doActivate(t)}
                   onDelete={() => doDelete(t.id)}
+                  onRename={(name) => doRename(t.id, name)}
+                  onDuplicate={() => doDuplicate(t)}
+                  onEditCode={() => {
+                    setEditingTemplate(t)
+                    setEditorValue(t.html)
+                  }}
                 />
               ))}
             </div>
           </section>
         )}
-
       </main>
 
-      {/* ── Footer ── */}
       <footer className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 border-t border-border/50">
         <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest text-center">
           Crafted for your perfect new tab experience
         </p>
       </footer>
 
-      {/* ── Status toast ── */}
       {status && (
         <div className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className={cn(
-            'rounded-full border px-4 sm:px-6 py-2.5 sm:py-3 text-[11px] font-bold uppercase tracking-widest shadow-2xl backdrop-blur-xl whitespace-nowrap',
-            status.ok
-              ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400'
-              : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400'
-          )}>
+          <div className={cn('rounded-full border px-4 sm:px-6 py-2.5 sm:py-3 text-[11px] font-bold uppercase tracking-widest shadow-2xl backdrop-blur-xl whitespace-nowrap', status.ok ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400' : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400')}>
             {status.msg}
           </div>
         </div>
       )}
-
     </div>
   )
 }
