@@ -2,7 +2,7 @@
   "name": "wyntab",
   "description": "Write Your NewTab, lets you replace the default new tab page with your own custom HTML",
   "private": true,
-  "version": "0.4.3",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
