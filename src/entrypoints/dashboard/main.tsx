@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
 import {
-  Moon, Sun, Upload, Trash2, Zap,
-  CheckCircle2, LayoutGrid, Sparkles,
-  Download, FileUp, Copy, Pencil, Check, X,
-  Code2, Save, ArrowLeft, Menu, Plus, ChevronDown,
+  Moon, Sun, Upload,
+  CheckCircle2, Sparkles,
+  Download, FileUp, X,
+  Code2, Save, ArrowLeft, Plus,
   Library, Settings, ShieldCheck, Info, Monitor, Eye
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -48,9 +48,6 @@ function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('built-in')
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null)
   
-  const [showMenu, setShowMenu] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
-  
   const fileRef = useRef<HTMLInputElement>(null)
   const backupRef = useRef<HTMLInputElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -59,16 +56,6 @@ function Dashboard() {
 
   useEffect(() => {
     refreshData()
-  }, [])
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowMenu(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
   async function refreshData() {
@@ -343,8 +330,11 @@ function Dashboard() {
               <img src="/icon/128.png" className="w-5 h-5 invert-0 brightness-0 invert" alt="WYNTab" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tighter italic leading-none">WYNTab</span>
-              <span className="text-[9px] font-black text-muted-foreground/40 leading-none mt-1">DASHBOARD v{browser.runtime.getManifest().version}</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-lg font-black tracking-tighter italic leading-none">WYNTab</span>
+                <span className="text-[10px] font-black text-primary/50 italic leading-none">v{browser.runtime.getManifest().version}</span>
+              </div>
+              <span className="text-[9px] font-black text-muted-foreground/40 leading-none mt-1 uppercase tracking-widest">Dashboard</span>
             </div>
           </div>
 
@@ -383,41 +373,6 @@ function Dashboard() {
         </div>
 
         <div className="mt-auto p-6 space-y-4">
-           <div className="relative" ref={menuRef}>
-              <button
-                onClick={() => setShowMenu(!showMenu)}
-                className="w-full inline-flex items-center justify-between rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] h-12 px-5 shadow-xl transition-all hover:opacity-90 active:scale-95"
-              >
-                <div className="flex items-center gap-2">
-                  <Plus size={14} />
-                  <span>New Template</span>
-                </div>
-                <ChevronDown size={14} className={cn("transition-transform duration-300", showMenu && "rotate-180")} />
-              </button>
-
-              {showMenu && (
-                <div className="absolute bottom-full left-0 mb-2 w-full rounded-2xl border border-border bg-card text-card-foreground shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
-                  <div className="p-1.5">
-                    <button
-                      onClick={() => { setShowMenu(false); fileRef.current?.click(); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-accent hover:text-accent-foreground transition-all text-left"
-                    >
-                      <Upload size={14} className="text-primary" />
-                      Upload HTML
-                    </button>
-                    <div className="h-px bg-border/50 my-1" />
-                    <button
-                      onClick={() => { setShowMenu(false); backupRef.current?.click(); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-accent hover:text-accent-foreground transition-all text-left"
-                    >
-                      <FileUp size={14} className="text-primary" />
-                      Import JSON
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
             <div className="flex items-center justify-between px-2">
                <button 
                 onClick={() => setDark(!dark)} 

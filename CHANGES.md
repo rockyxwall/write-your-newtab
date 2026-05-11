@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2] - 2026-05-11
+### Added
+- **Component Extraction**: Refactored the Dashboard by extracting `TemplateCard` into a dedicated, reusable component in `src/components/`, improving code maintainability.
+- **Enhanced Onboarding Icons**: Updated feature cards in the onboarding flow with more descriptive icons (`Library`, `Code2`) and added interactive hover animations.
+### Changed
+- **Hybrid Rounding Strategy**: Introduced a contextual rounding approach—using "sharp" `rounded-sm` corners for technical tools (Live Editor) to emphasize precision, while maintaining "soft" `rounded-2xl` curves for general UI elements for brand friendliness.
+- **Dashboard Refinement**: Simplified the sidebar by removing the redundant "New Template" button and consolidated card rendering into the `TemplateCard` component. Also relocated the version indicator to follow the brand name ("WYNTab vX.X.X") for better brand association and a cleaner layout.
+
 ## [0.4.1] - 2026-05-11
 ### Changed
 - **UI Refinement**: Standardized corner roundness to `rounded-2xl` (16px) across all Dashboard cards, modals, and sidebar elements for a more balanced professional aesthetic.
