@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal - WYNTab</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            text-align: center;
+        }
+        h1 {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff 0%, #333 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            margin-top: 2rem;
+            opacity: 0.3;
+            font-weight: 700;
+        }
+        .dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(#ffffff 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="dots"></div>
+    <div class="content">
+        <h1>HELLO</h1>
+        <p>Stay Focused</p>
+    </div>
+</body>
+</html>

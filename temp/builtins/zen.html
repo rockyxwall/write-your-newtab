@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen - WYNTab</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #0f172a 0%, #1e1b4b 100%);
+            color: #818cf8;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+        .content {
+            text-align: center;
+            z-index: 2;
+        }
+        #clock {
+            font-size: 9rem;
+            font-weight: 100;
+            margin: 0;
+            letter-spacing: -6px;
+            opacity: 0.8;
+        }
+        #date {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 12px;
+            margin-top: 30px;
+            opacity: 0.4;
+            font-weight: 600;
+        }
+        .orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(129, 140, 248, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(40px);
+        }
+    </style>
+</head>
+<body>
+    <div class="orb"></div>
+    <div class="content">
+        <h1 id="clock">00:00</h1>
+        <div id="date">BE PRESENT</div>
+    </div>
+</body>
+</html>
