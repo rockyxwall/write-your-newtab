@@ -3,11 +3,19 @@ import { useEffect, useRef, useState } from 'react'
 import {
   Moon, Sun, Upload, Trash2, Zap,
   CheckCircle2, LayoutGrid, Sparkles,
+  Download, FileUp
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
 import { activeTemplateHtml, activeTemplateId, userTemplates } from '@/lib/storage'
 import { sanitizeHtml } from '@/lib/sanitize'
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface BackupData {
+  version: number
+  userTemplates: Template[]
+  activeTemplateId: string
+}
 
 // ─── Dark mode hook ───────────────────────────────────────────────────────────
 // Reads initial state from <html> class (set by theme-init.js before render)
@@ -143,23 +151,27 @@ function Dashboard() {
   const [userList, setUserList] = useState<Template[]>([])
   const [status, setStatus] = useState<{ msg: string; ok: boolean } | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const backupRef = useRef<HTMLInputElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const builtins = getBuiltinTemplates()
 
   useEffect(() => {
-    Promise.all([
+    refreshData()
+  }, [])
+
+  async function refreshData() {
+    const [id, saved] = await Promise.all([
       activeTemplateId.getValue(),
       userTemplates.getValue(),
-    ]).then(([id, saved]) => {
-      setUserList(saved || [])
-      if (!id && builtins.length > 0) {
-        doActivate(builtins[0])
-      } else {
-        setActiveId(id)
-      }
-    })
-  }, [])
+    ])
+    setUserList(saved || [])
+    if (!id && builtins.length > 0) {
+      doActivate(builtins[0])
+    } else {
+      setActiveId(id)
+    }
+  }
 
   function showStatus(msg: string, ok: boolean) {
     setStatus({ msg, ok })
@@ -242,6 +254,59 @@ function Dashboard() {
     e.target.value = ''
   }
 
+  async function handleExport() {
+    try {
+      const data: BackupData = {
+        version: 1,
+        userTemplates: userList,
+        activeTemplateId: activeId,
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `wyntab-backup-${new Date().toISOString().split('T')[0]}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      showStatus('Backup exported successfully.', true)
+    } catch (err) {
+      showStatus('Failed to export backup.', false)
+    }
+  }
+
+  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = async (ev) => {
+      try {
+        const raw = ev.target?.result as string
+        const data = JSON.parse(raw) as BackupData
+
+        if (!data.userTemplates || !Array.isArray(data.userTemplates)) {
+          throw new Error('Invalid backup format')
+        }
+
+        await userTemplates.setValue(data.userTemplates)
+        if (data.activeTemplateId) {
+          const allTemplates = [...builtins, ...data.userTemplates]
+          const active = allTemplates.find(t => t.id === data.activeTemplateId)
+          if (active) {
+            await doActivate(active)
+          }
+        }
+
+        await refreshData()
+        showStatus('Backup imported successfully.', true)
+      } catch (err) {
+        showStatus('Failed to import backup. Invalid file.', false)
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
+
   return (
     <div className="min-h-dvh bg-background text-foreground transition-colors duration-300">
 
@@ -256,13 +321,26 @@ function Dashboard() {
             <span className="text-base sm:text-lg font-black uppercase tracking-tighter italic">WYNTab</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
-            <input
-              type="file"
-              ref={fileRef}
-              className="hidden"
-              accept=".html"
-              onChange={handleFile}
-            />
+            <input type="file" ref={fileRef} className="hidden" accept=".html" onChange={handleFile} />
+            <input type="file" ref={backupRef} className="hidden" accept=".json" onChange={handleImport} />
+            
+            <div className="flex items-center bg-muted/50 rounded-full p-1 gap-1 border border-border/50">
+               <button
+                onClick={handleExport}
+                title="Export Backup"
+                className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px"
+              >
+                <Download size={14} />
+              </button>
+              <button
+                onClick={() => backupRef.current?.click()}
+                title="Import Backup"
+                className="inline-flex items-center justify-center rounded-full h-7 w-7 sm:h-8 sm:w-8 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px"
+              >
+                <FileUp size={14} />
+              </button>
+            </div>
+
             <button
               onClick={() => fileRef.current?.click()}
               className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px"

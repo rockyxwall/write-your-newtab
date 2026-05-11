@@ -1,4 +1,11 @@
 export default defineBackground(() => {
+  // Open onboarding on install
+  browser.runtime.onInstalled.addListener(({ reason }) => {
+    if (reason === 'install') {
+      browser.tabs.create({ url: browser.runtime.getURL('/onboarding.html') });
+    }
+  });
+
   browser.action.onClicked.addListener(async (activeTab) => {
     const dashboardUrl = browser.runtime.getURL('/dashboard.html');
 
