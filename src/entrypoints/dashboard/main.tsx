@@ -341,7 +341,7 @@ function Dashboard() {
             </button>
             <div className="flex flex-col">
               <span className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1">Editor Mode</span>
-              <span className="text-sm font-bold truncate max-w-[200px]">{editingTemplate.name}</span>
+              <span className="text-sm font-bold truncate max-w-50">{editingTemplate.name}</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -364,7 +364,7 @@ function Dashboard() {
             </button>
           </div>
         </header>
-        <main className="flex-grow flex overflow-hidden bg-muted/20">
+        <main className="grow flex overflow-hidden bg-muted/20">
           <div className="flex-1 flex flex-col p-6 overflow-hidden">
             <div className="flex items-center justify-between mb-3">
                <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
@@ -372,7 +372,7 @@ function Dashboard() {
                </h2>
                <div className="text-[10px] font-medium text-muted-foreground/60 italic">Live editing enabled</div>
             </div>
-            <div className="flex-grow overflow-hidden rounded-2xl border border-border shadow-inner">
+            <div className="grow overflow-hidden rounded-2xl border border-border shadow-inner">
                <Editor value={editingTemplate.html} onChange={setEditorValue} darkMode={dark} />
             </div>
           </div>
@@ -380,7 +380,7 @@ function Dashboard() {
              <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
                <Sparkles size={14} className="text-primary" /> Live Preview
              </h2>
-             <div className="flex-grow bg-white rounded-2xl border border-border overflow-hidden shadow-2xl relative">
+             <div className="grow bg-white rounded-2xl border border-border overflow-hidden shadow-2xl relative">
                 <iframe 
                   srcDoc={editorValue} 
                   className="absolute inset-0 w-full h-full border-none"
@@ -405,7 +405,7 @@ function Dashboard() {
         <div className="p-6">
           <div className="flex items-center gap-2.5 mb-10">
             <div className="bg-primary p-2 rounded-2xl shadow-lg shadow-primary/20">
-              <img src="/icon/128.png" className="w-5 h-5 invert-0 brightness-0 invert" alt="WYNTab" />
+              <img src="/icon/128.png" className="w-5 h-5 invert-0 brightness-0" alt="WYNTab" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-baseline gap-1.5">
@@ -529,7 +529,7 @@ function Dashboard() {
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center max-w-sm mx-auto animate-in fade-in zoom-in duration-500">
-                <div className="h-20 w-20 bg-muted/50 rounded-3xl bg-muted/30 border border-border flex items-center justify-center mb-6 border border-border">
+                <div className="h-20 w-20 bg-muted/50 rounded-3xl border border-border flex items-center justify-center mb-6">
                   <Upload size={32} className="text-muted-foreground/50" />
                 </div>
                 <h3 className="text-lg font-black uppercase tracking-tighter italic mb-2">Empty Library</h3>
@@ -633,7 +633,7 @@ function Dashboard() {
 
       {/* Large Preview Modal */}
       {previewTemplate && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-10 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-10 animate-in fade-in duration-300">
            <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={() => setPreviewTemplate(null)} />
            <div className="relative w-full max-w-6xl aspect-video bg-white rounded-2xl shadow-2xl overflow-hidden border border-border/50 flex flex-col scale-in animate-in zoom-in-95 duration-300">
               <header className="h-16 flex items-center justify-between px-8 bg-background/50 backdrop-blur-xl border-b border-border shrink-0">
@@ -675,7 +675,7 @@ function Dashboard() {
       )}
 
       {status && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[110] animate-in fade-in slide-in-from-bottom-6 duration-500">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-110 animate-in fade-in slide-in-from-bottom-6 duration-500">
           <div className={cn(
             'rounded-2xl border px-8 py-4 text-[11px] font-black uppercase tracking-widest shadow-2xl backdrop-blur-2xl whitespace-nowrap flex items-center gap-3', 
             status.ok ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400' : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400'
