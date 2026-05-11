@@ -17,7 +17,8 @@ This roadmap outlines the planned features and improvements for WYNTab, ranked b
 ## Phase 3: Visual Polish & Built-in Expansion (P2) v0.4.0
 *   **[ ] Dashboard Redesign:** Shift to a modern Sidebar + Content layout with glassmorphism effects.
 *   **[ ] Enhanced Previews:** Implement large preview modals and hover animations for template cards.
-*   **[ ] New Built-in Gallery**: Add "Matrix", "Bento Grid", "Pomodoro", "Zen", and "Kanban Lite" pre-built templates.
+*   **[ ] New Built-in Gallery**: Implement high-quality static templates (like "Terminal"). 
+    *   *Note: Interactive templates (Matrix, Bento, etc.) are temporarily moved to `temp/` until the Widget API is ready.*
 *   **[ ] UI/UX Refinement**: Improve typography (Inter/Geist) and transition smoothness.
 
 ## Phase 4: Professional Standards & Reach (P3) v0.5.0

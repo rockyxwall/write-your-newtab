@@ -5,7 +5,7 @@
 - **UI Refinement**: Standardized corner roundness to `rounded-2xl` (16px) across all Dashboard cards, modals, and sidebar elements for a more balanced professional aesthetic.
 - **CSP Compatibility Fix**: Removed inline scripts from all built-in templates to ensure full compatibility with strict browser extension Content Security Policies (MV3).
 - **Template Stability**: Templates like Matrix and Pomodoro now use static placeholders, preventing script-block errors on the New Tab page.
-- **Builtin Cleanup**: Removed the "Focus" template as it required JavaScript for core functionality.
+- **Builtin Cleanup**: Moved interactive templates (Matrix, Bento, Pomodoro, Zen, Kanban, Focus) to `temp/builtins/` until the Widget API is implemented. Only purely static templates (like Terminal) remain active in the gallery.
 - **Minor Text Fix**: Updated the New Tab empty state message to "pick a builtin" for better clarity.
 - **Preview Refinement**: Removed scrollbars and disabled all interactivity in template previews (cards and modal) to ensure a consistent, non-distracting visual experience.
 - **Onboarding Polish**: Updated logo and card styles to match the new design standards.
