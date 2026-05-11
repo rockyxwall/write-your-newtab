@@ -2,46 +2,39 @@
 
 # WYNTab (Write Your NewTab)
 
-**WYNTab** is a powerful browser extension that enables you to fully customize your New Tab page by uploading and activating your own HTML templates.
+WYNTab is a browser extension that enables full customization of the New Tab page by activating custom HTML templates. Use personal creations—ranging from minimalist clocks to complex web applications—as a centralized New Tab interface.
 
-It allows you to use your own creations—whether it's a minimalist clock, a personal dashboard, or a complex web app—as your centralized New Tab interface.
+#### Core Features
 
-#### **Core Features**
+- **Custom HTML Uploads**: Import any HTML file to use as a New Tab page instantly.
+- **Live Creation**: Create and develop new templates directly in the browser.
+- **Integrated Code Editor**: Built-in CodeMirror 6 editor with real-time preview and draft-based saving.
+- **Built-in Gallery**: A collection of pre-configured templates for productivity and aesthetics.
+- **Data Portability**: Full export and import functionality for custom templates and settings via JSON backups.
+- **Sandboxed Security**: Templates run in a safe, sandboxed environment with a robust sanitization engine.
 
-- **Custom HTML Uploads**: Upload any HTML file and see it instantly as your New Tab.
-- **Built-in Templates**: Start quickly with pre-configured templates like "Focus" and "Terminal".
-- **Sandboxed Security**: Your templates run in a safe, sandboxed environment to protect your privacy and security.
-- **Modern Dashboard**: Manage your template library with a sleek React-powered interface.
-
-#### **Built-in Templates**
-
-| Template | Description |
-| :--- | :--- |
-| **Focus** | A minimalist distraction-free interface for productivity. |
-| **Terminal** | A geeky terminal-style dashboard for CLI lovers. |
-| **Clock** | A simple, elegant time-focused display. |
-
-#### **Download**
+#### Download
 
 [![Chrome](https://img.shields.io/chrome-web-store/users/hbfabaimiglbfjhcppfedgjkpfgabiff.svg?style=flat-square&label=Chrome&logo=google%20chrome&logoColor=white)](https://chromewebstore.google.com/detail/wyntab/hbfabaimiglbfjhcppfedgjkpfgabiff)
 
-## What more can it do?
+## Capabilities
 
-**WYNTab Dashboard**
-- Manage multiple templates easily in one place.
-- Preview your templates before setting them live.
-- Seamlessly switch between different New Tab designs with one click.
+**Advanced Dashboard**
+- Professional sidebar and content layout with glassmorphism effects.
+- Comprehensive template management including duplication, renaming, and deletion.
+- High-resolution preview modal for visualizing designs before activation.
+- Interactive onboarding flow for first-time users.
 
-**Security & Privacy**
-- **Automatic Sanitization**: Security layer to strip dangerous elements from user-uploaded HTML.
-- **Local Storage**: Your templates and settings are stored locally in your browser, never sent to a server.
+**Security and Privacy**
+- **Automatic Sanitization**: A dedicated engine strips potentially dangerous elements from user-uploaded HTML to ensure compliance with extension security standards.
+- **Local Storage**: Templates and configurations are stored locally in the browser and are never transmitted to external servers.
 
-**Developer Friendly**
-- Built with the latest tech: **WXT**, **React 19**, and **Tailwind CSS 4**.
-- Add your own built-in templates by simply dropping HTML files into the `src/builtins/` directory.
+**Developer Experience**
+- Built with modern technologies: WXT, React 19, and Tailwind CSS 4.
+- Support for custom built-in templates by adding HTML files to the source directory.
 
-## Want to Contribute?
+## Contribution
 
-Found a bug or have a feature request? Let me know on [GitHub Issues](https://github.com/rockyxwall/write-your-newtab/issues).
+Report bugs or suggest features via the GitHub Issues tracker.
 
-How to add a new builtin template? How to build? Check the [GEMINI.md](GEMINI.md) for technical documentation.
+Technical documentation regarding development and architecture is available in GEMINI.md.
