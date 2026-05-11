@@ -5,6 +5,7 @@
 - **UI Refinement**: Standardized corner roundness to `rounded-2xl` (16px) across all Dashboard cards, modals, and sidebar elements for a more balanced professional aesthetic.
 - **CSP Compatibility Fix**: Removed inline scripts from all built-in templates to ensure full compatibility with strict browser extension Content Security Policies (MV3).
 - **Template Stability**: Templates like Matrix and Pomodoro now use static placeholders, preventing script-block errors on the New Tab page.
+- **Minor Text Fix**: Updated the New Tab empty state message to "pick a builtin" for better clarity.
 - **Onboarding Polish**: Updated logo and card styles to match the new design standards.
 
 ## [0.4.0] - 2026-05-11
