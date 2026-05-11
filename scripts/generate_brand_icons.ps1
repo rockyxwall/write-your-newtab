@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-$sourcePath = "public/icon/128.png"
+$sourcePath = "public/example/128.png"
 if (-not (Test-Path $sourcePath)) {
     Write-Error "Source icon not found at $sourcePath"
     exit
@@ -29,13 +29,13 @@ function Create-BrandIcon {
     # Draw resized image
     $g.DrawImage($srcImg, 0, 0, $size, $size)
     
-    # Convert all non-transparent pixels to white
+    # Convert all non-transparent pixels to black
     for ($x = 0; $x -lt $newImg.Width; $x++) {
         for ($y = 0; $y -lt $newImg.Height; $y++) {
             $pixel = $newImg.GetPixel($x, $y)
             if ($pixel.A -gt 0) {
-                # Preserve original alpha but force color to white
-                $newColor = [System.Drawing.Color]::FromArgb($pixel.A, 255, 255, 255)
+                # Preserve original alpha but force color to black
+                $newColor = [System.Drawing.Color]::FromArgb($pixel.A, 0, 0, 0)
                 $newImg.SetPixel($x, $y, $newColor)
             }
         }
