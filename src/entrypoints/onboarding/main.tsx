@@ -16,7 +16,7 @@ function Onboarding() {
         {/* Logo */}
         <div className="flex flex-col items-center gap-4">
           <div className="bg-primary p-4 rounded-2xl shadow-2xl shadow-primary/20">
-            <img src="/icon/128.png" className="w-12 h-12 invert-0 brightness-0" alt="WYNTab" />
+            <img src="/icon/128.png" className="w-12 h-12 brightness-0 invert dark:invert-0" alt="WYNTab" />
           </div>
           <h1 className="text-5xl font-black tracking-tighter italic uppercase">WYNT<span className="lowercase">ab</span></h1>
           <p className="text-muted-foreground text-lg font-medium uppercase tracking-[0.2em]">Write Your NewTab</p>

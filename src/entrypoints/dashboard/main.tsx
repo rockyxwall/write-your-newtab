@@ -405,7 +405,7 @@ function Dashboard() {
         <div className="p-6">
           <div className="flex items-center gap-2.5 mb-10">
             <div className="bg-primary p-2 rounded-2xl shadow-lg shadow-primary/20">
-              <img src="/icon/128.png" className="w-5 h-5 invert-0 brightness-0" alt="WYNTab" />
+              <img src="/icon/128.png" className="w-5 h-5 brightness-0 invert dark:invert-0" alt="WYNTab" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-baseline gap-1.5">
