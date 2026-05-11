@@ -130,9 +130,16 @@ function Dashboard() {
     if (!editingTemplate) return
     
     const sanitized = sanitizeHtml(editorValue)
-    const updated = userList.map(t => 
-      t.id === editingTemplate.id ? { ...t, html: sanitized } : t
-    )
+    const exists = userList.some(t => t.id === editingTemplate.id)
+    
+    let updated: Template[]
+    if (exists) {
+      updated = userList.map(t => 
+        t.id === editingTemplate.id ? { ...t, html: sanitized } : t
+      )
+    } else {
+      updated = [...userList, { ...editingTemplate, html: sanitized }]
+    }
     
     await userTemplates.setValue(updated)
     setUserList(updated)
@@ -144,6 +151,77 @@ function Dashboard() {
     
     setEditingTemplate(null)
     showStatus('Changes saved.', true)
+  }
+
+  async function handleCreateBlank() {
+    const starterHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Template</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --fg: #ffffff;
+      --accent: #3b82f6;
+    }
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, sans-serif;
+      text-align: center;
+    }
+    .container {
+      padding: 2rem;
+      border-radius: 2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      margin: 0;
+      background: linear-gradient(to bottom right, #fff, #666);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+    .accent { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WYN<span class="accent">Tab</span></h1>
+    <p>Your journey begins here</p>
+  </div>
+</body>
+</html>`
+
+    const newTemplate: Template = {
+      id: `user-${Date.now()}`,
+      name: 'Untitled Template',
+      html: starterHtml,
+      isBuiltin: false,
+      uploadedAt: new Date().toISOString(),
+    }
+
+    setEditingTemplate(newTemplate)
+    setEditorValue(starterHtml)
   }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -357,7 +435,7 @@ function Dashboard() {
               )}
             >
               <Upload size={16} />
-              Your Uploads
+              Custom Library
             </button>
             <button 
               onClick={() => setActiveTab('settings')}
@@ -396,7 +474,7 @@ function Dashboard() {
               {activeTab === 'custom' && <Upload size={18} className="text-primary" />}
               {activeTab === 'settings' && <Settings size={18} className="text-primary" />}
               <h2 className="text-xs font-black uppercase tracking-[0.2em] text-foreground">
-                {activeTab === 'built-in' ? 'Built-in Gallery' : activeTab === 'custom' ? 'Your Custom Library' : 'System Settings'}
+                {activeTab === 'built-in' ? 'Built-in Gallery' : activeTab === 'custom' ? 'Custom Library' : 'System Settings'}
               </h2>
            </div>
            {activeTab === 'custom' && userList.length > 0 && (
@@ -454,19 +532,28 @@ function Dashboard() {
                 <div className="h-20 w-20 bg-muted/50 rounded-3xl bg-muted/30 border border-border flex items-center justify-center mb-6 border border-border">
                   <Upload size={32} className="text-muted-foreground/50" />
                 </div>
-                <h3 className="text-lg font-black uppercase tracking-tighter italic mb-2">No Custom Templates</h3>
+                <h3 className="text-lg font-black uppercase tracking-tighter italic mb-2">Empty Library</h3>
                 <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-8">
-                  Upload your first HTML template to start personalizing your experience beyond the built-in gallery.
+                  Upload or create your first HTML template to start personalizing your experience beyond the built-in gallery.
                   <br />
                   <span className="text-[10px] text-amber-500/80 font-bold uppercase tracking-wider mt-2 block">Note: Scripts are disabled for security.</span>
                 </p>
-                <button 
-                  onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
-                >
-                  <Plus size={16} />
-                  Upload HTML
-                </button>
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  <button 
+                    onClick={() => fileRef.current?.click()}
+                    className="inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                  >
+                    <Plus size={16} />
+                    Upload HTML
+                  </button>
+                  <button 
+                    onClick={handleCreateBlank}
+                    className="inline-flex items-center gap-3 bg-muted text-foreground px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-border transition-all border border-border"
+                  >
+                    <Code2 size={16} />
+                    Create Live
+                  </button>
+                </div>
               </div>
             )
           )}
