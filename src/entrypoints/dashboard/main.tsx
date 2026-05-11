@@ -527,7 +527,7 @@ function Dashboard() {
         <div className="p-6">
           <div className="flex items-center gap-2.5 mb-10">
             <div className="bg-primary p-2 rounded-2xl shadow-lg shadow-primary/20">
-              <Sparkles size={20} className="text-primary-foreground" />
+              <img src="/icon/128.png" className="w-5 h-5 invert-0 brightness-0 invert" alt="WYNTab" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-black tracking-tighter italic leading-none">WYNTab</span>
