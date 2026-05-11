@@ -9,7 +9,10 @@ When you upload an HTML file, WYNTab:
 3.  **Renders** the HTML inside a sandboxed `iframe` using `srcDoc`.
 
 ## Security & Sanitization
-To comply with browser extension security policies and protect your data, WYNTab automatically removes the following from uploaded files:
+> [!IMPORTANT]
+> **JavaScript is strictly disabled.** Due to browser extension security policies (Manifest V3 CSP), all `<script>` tags and inline event handlers (like `onclick`) are automatically removed during the upload process. Your templates must be strictly HTML and CSS.
+
+WYNTab automatically removes the following from uploaded files:
 *   `<script>` tags (JavaScript is not allowed in uploaded templates).
 *   `<iframe>`, `<object>`, `<embed>`, and `<base>` tags.
 *   Inline event handlers (e.g., `onclick`, `onmouseover`).

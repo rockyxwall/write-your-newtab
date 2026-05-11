@@ -42,7 +42,9 @@ function Preview({ html }: { html?: string }) {
 
   useEffect(() => {
     if (!html) return
-    const blob = new Blob([html], { type: 'text/html' })
+    // Inject style to hide scrollbars in the preview
+    const styledHtml = `<style>html, body { overflow: hidden !important; pointer-events: none !important; cursor: default !important; }</style>` + html
+    const blob = new Blob([styledHtml], { type: 'text/html' })
     const url = URL.createObjectURL(blob)
     setBlobUrl(url)
     return () => URL.revokeObjectURL(url)
@@ -53,6 +55,7 @@ function Preview({ html }: { html?: string }) {
       {blobUrl ? (
         <iframe
           src={blobUrl}
+          scrolling="no"
           className="absolute inset-0 h-[400%] w-[400%] origin-top-left scale-25 pointer-events-none border-none select-none"
           title="Preview"
         />
@@ -464,6 +467,10 @@ function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 mr-2">
+               <ShieldCheck size={14} />
+               <span className="text-[10px] font-bold uppercase tracking-wider">Scripts Disabled (CSP)</span>
+            </div>
             <button 
               onClick={() => setEditingTemplate(null)}
               className="inline-flex items-center justify-center rounded-full border border-border bg-background h-10 px-5 text-[11px] font-bold uppercase tracking-wider hover:bg-muted transition-all"
@@ -682,6 +689,8 @@ function Dashboard() {
                 <h3 className="text-lg font-black uppercase tracking-tighter italic mb-2">No Custom Templates</h3>
                 <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-8">
                   Upload your first HTML template to start personalizing your experience beyond the built-in gallery.
+                  <br />
+                  <span className="text-[10px] text-amber-500/80 font-bold uppercase tracking-wider mt-2 block">Note: Scripts are disabled for security.</span>
                 </p>
                 <button 
                   onClick={() => fileRef.current?.click()}
@@ -713,6 +722,26 @@ function Dashboard() {
                               <span className="text-[11px] font-bold uppercase tracking-wider">Platform</span>
                            </div>
                            <span className="text-[11px] font-black font-mono text-primary">Web Extension</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="space-y-4">
+                     <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Security & Scripting</h3>
+                     <div className="p-6 rounded-3xl bg-muted/30 border border-border">
+                        <div className="flex items-start gap-4">
+                           <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
+                              <ShieldCheck size={20} />
+                           </div>
+                           <div className="space-y-2">
+                              <h4 className="text-xs font-black uppercase tracking-wider">Scripts are Disabled</h4>
+                              <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
+                                 Due to browser extension security policies (CSP), all <code>&lt;script&gt;</code> tags are automatically removed. Your templates should rely strictly on HTML and CSS.
+                              </p>
+                              <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
+                                 We are working on a secure <strong>Widget API</strong> for future releases to bring back dynamic elements like clocks and weather safely.
+                              </p>
+                           </div>
                         </div>
                      </div>
                   </div>
@@ -777,10 +806,11 @@ function Dashboard() {
                     </button>
                  </div>
               </header>
-              <div className="flex-1 relative bg-white">
+              <div className="flex-1 relative bg-white overflow-hidden">
                  <iframe 
-                   srcDoc={previewTemplate.html} 
-                   className="absolute inset-0 w-full h-full border-none"
+                   srcDoc={`<style>html, body { overflow: hidden !important; pointer-events: none !important; cursor: default !important; user-select: none !important; }</style>${previewTemplate.html}`}
+                   scrolling="no"
+                   className="absolute inset-0 w-full h-full border-none pointer-events-none"
                    title="Large Preview"
                    sandbox="allow-scripts allow-same-origin allow-forms"
                  />
