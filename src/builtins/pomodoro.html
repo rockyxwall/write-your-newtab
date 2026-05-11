@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro - WYNTab</title>
+    <style>
+        :root {
+            --bg: #ba4949;
+            --card: rgba(255, 255, 255, 0.15);
+            --text: #ffffff;
+            --accent: #ffffff;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: var(--card);
+            padding: 2rem 3rem;
+            border-radius: 32px;
+            text-align: center;
+            width: 90%;
+            max-width: 440px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .modes {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
+            opacity: 0.5;
+            font-size: 0.95rem;
+        }
+        .mode-btn.active {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.15);
+        }
+        #timer {
+            font-size: 8rem;
+            font-weight: 800;
+            margin: 10px 0 30px 0;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+        #start-btn {
+            background: #ffffff;
+            color: var(--bg);
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            border-radius: 12px;
+            text-transform: uppercase;
+            box-shadow: 0 6px 0 #ebebeb;
+            letter-spacing: 2px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="modes">
+            <button class="mode-btn active">Pomodoro</button>
+            <button class="mode-btn">Short Break</button>
+            <button class="mode-btn">Long Break</button>
+        </div>
+        <div id="timer">25:00</div>
+        <button id="start-btn">Focus</button>
+    </div>
+</body>
+</html>

@@ -14,7 +14,7 @@ function Onboarding() {
         
         {/* Logo */}
         <div className="flex flex-col items-center gap-4">
-          <div className="bg-primary p-4 rounded-3xl shadow-2xl shadow-primary/20">
+          <div className="bg-primary p-4 rounded-2xl shadow-2xl shadow-primary/20">
             <Sparkles size={48} className="text-primary-foreground" />
           </div>
           <h1 className="text-5xl font-black tracking-tighter italic uppercase">WYNT<span className="lowercase">ab</span></h1>

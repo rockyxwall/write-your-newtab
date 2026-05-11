@@ -14,13 +14,18 @@ This roadmap outlines the planned features and improvements for WYNTab, ranked b
     *   **Duplicate:** Users can clone any template (including built-ins).
 *   **[x] Versioning:** Extension version is now visible in the Dashboard footer.
 
+## Phase 3: Visual Polish & Built-in Expansion (P2) v0.4.0
+*   **[ ] Dashboard Redesign:** Shift to a modern Sidebar + Content layout with glassmorphism effects.
+*   **[ ] Enhanced Previews:** Implement large preview modals and hover animations for template cards.
+*   **[ ] New Built-in Gallery**: Add "Matrix", "Bento Grid", "Pomodoro", "Zen", and "Kanban Lite" pre-built templates.
+*   **[ ] UI/UX Refinement**: Improve typography (Inter/Geist) and transition smoothness.
 
-## Phase 3: Professional Standards & Reach (P2) v0.4.0
+## Phase 4: Professional Standards & Reach (P3) v0.5.0
 *   **[ ] Internationalization (i18n):** Move all hardcoded strings to `_locales/` to support multiple languages.
 *   **[ ] Remote Template Gallery:** Create a curated online gallery where users can browse, preview, and install community-made templates with a single click.
 *   **[ ] Widget API (Safe Scripts):** Introduce a way to add dynamic content (Clock, Weather, RSS) via safe, pre-vetted components that don't violate Chrome Web Store CSP policies.
 
-## Phase 4: Polish & Performance (P3) v0.4.5
+## Phase 5: Polish & Performance (P4) v0.5.5
 *   **[ ] Keyboard Shortcuts:** Add hotkeys for common Dashboard actions (Upload, Toggle Theme, Save).
 *   **[ ] Performance Audit:** Optimize the storage and retrieval of very large HTML templates to ensure instant New Tab loading.
 *   **[ ] Mobile Preview:** Add a toggle in the Dashboard to preview how templates look on different screen sizes.

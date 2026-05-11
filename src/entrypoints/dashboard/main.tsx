@@ -4,7 +4,8 @@ import {
   Moon, Sun, Upload, Trash2, Zap,
   CheckCircle2, LayoutGrid, Sparkles,
   Download, FileUp, Copy, Pencil, Check, X,
-  Code2, Save, ArrowLeft, Menu, Plus, ChevronDown
+  Code2, Save, ArrowLeft, Menu, Plus, ChevronDown,
+  Library, Settings, ShieldCheck, Info, Monitor, Eye
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getBuiltinTemplates, type Template } from '@/lib/templates'
@@ -13,6 +14,8 @@ import { sanitizeHtml } from '@/lib/sanitize'
 import { Editor } from '@/components/Editor'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+type Tab = 'built-in' | 'custom' | 'settings'
+
 interface BackupData {
   version: number
   userTemplates: Template[]
@@ -72,6 +75,7 @@ function TemplateCard({
   onRename,
   onDuplicate,
   onEditCode,
+  onPreview,
 }: {
   template: Template
   isActive: boolean
@@ -80,6 +84,7 @@ function TemplateCard({
   onRename?: (newName: string) => void
   onDuplicate: () => void
   onEditCode: () => void
+  onPreview: () => void
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState(template.name)
@@ -94,15 +99,33 @@ function TemplateCard({
   return (
     <div
       className={cn(
-        'group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground transition-all duration-300',
-        'hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 active:scale-[0.99]',
-        isActive && 'border-primary/50 shadow-lg shadow-primary/5'
+        'group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground transition-all duration-500',
+        'hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1',
+        isActive && 'border-primary/50 ring-1 ring-primary/20 shadow-xl shadow-primary/5'
       )}
     >
-      <Preview html={template.html} />
+      <div className="relative aspect-video overflow-hidden">
+        <Preview html={template.html} />
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 z-20">
+           <button 
+             onClick={(e) => { e.stopPropagation(); onPreview(); }}
+             className="h-9 w-9 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/40 transition-all scale-90 group-hover:scale-100"
+             title="Large Preview"
+           >
+             <Eye size={18} />
+           </button>
+           <button 
+             onClick={(e) => { e.stopPropagation(); onActivate(); }}
+             className="h-9 w-9 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all scale-90 group-hover:scale-100"
+             title="Activate"
+           >
+             <Zap size={18} fill="currentColor" />
+           </button>
+        </div>
+      </div>
 
       {/* Title + Badge */}
-      <div className="p-3 pb-0 space-y-1">
+      <div className="p-4 pb-0 space-y-1">
         <div className="flex items-start justify-between gap-2">
           {isEditing ? (
             <div className="flex items-center gap-1 flex-1">
@@ -117,24 +140,24 @@ function TemplateCard({
                     setEditName(template.name)
                   }
                 }}
-                className="w-full bg-muted border border-primary/30 rounded px-1.5 py-0.5 text-[11px] font-bold outline-none"
+                className="w-full bg-muted border border-primary/30 rounded-lg px-2 py-1 text-[11px] font-bold outline-none"
               />
               <button onClick={handleRename} className="text-green-500 hover:text-green-600 transition-colors">
-                <Check size={12} />
+                <Check size={14} />
               </button>
               <button onClick={() => setIsEditing(false)} className="text-red-500 hover:text-red-600 transition-colors">
-                <X size={12} />
+                <X size={14} />
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-1 truncate flex-1 group/name">
-              <h3 className="truncate text-[11px] font-bold leading-tight uppercase tracking-tight">
+            <div className="flex items-center gap-1.5 truncate flex-1 group/name">
+              <h3 className="truncate text-xs font-bold leading-tight uppercase tracking-tight text-foreground/80">
                 {template.name}
               </h3>
               {!template.isBuiltin && onRename && (
                 <button
                   onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
-                  className="opacity-0 group-hover/name:opacity-100 p-0.5 hover:bg-muted rounded transition-all"
+                  className="opacity-0 group-hover/name:opacity-100 p-1 hover:bg-muted rounded-md transition-all"
                 >
                   <Pencil size={10} className="text-muted-foreground" />
                 </button>
@@ -143,10 +166,10 @@ function TemplateCard({
           )}
           <span
             className={cn(
-              'shrink-0 inline-flex items-center justify-center rounded-full border px-1.5 py-0 h-4 text-[8px] font-black uppercase tracking-wide transition-colors',
+              'shrink-0 inline-flex items-center justify-center rounded-full border px-2 py-0.5 h-4 text-[8px] font-black uppercase tracking-widest transition-colors',
               template.isBuiltin
-                ? 'bg-secondary text-secondary-foreground border-transparent'
-                : 'border-border text-foreground'
+                ? 'bg-secondary/50 text-secondary-foreground border-transparent'
+                : 'border-border text-foreground/60'
             )}
           >
             {template.isBuiltin ? 'Built-in' : 'Custom'}
@@ -154,65 +177,51 @@ function TemplateCard({
         </div>
       </div>
 
-      {/* Active indicator + Duplicate/Edit */}
-      <div className="px-3 py-2 flex items-center justify-between">
+      {/* Footer Info */}
+      <div className="px-4 py-3 mt-auto flex items-center justify-between border-t border-border/50 bg-muted/10">
         {isActive ? (
-          <div className="flex items-center gap-1 text-[9px] text-green-600 dark:text-green-400 font-black uppercase tracking-widest">
-            <CheckCircle2 size={10} strokeWidth={3} />
+          <div className="flex items-center gap-1.5 text-[10px] text-primary font-black uppercase tracking-widest">
+            <ShieldCheck size={12} strokeWidth={2.5} />
             <span>Active</span>
           </div>
         ) : (
-          <div className="h-3" />
+          <div className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">
+             {template.isBuiltin ? 'Ready to use' : 'User Template'}
+          </div>
         )}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {!template.isBuiltin && (
              <button
-              onClick={onEditCode}
+              onClick={(e) => { e.stopPropagation(); onEditCode(); }}
+              className="h-7 w-7 flex items-center justify-center hover:bg-primary/10 rounded-full transition-all text-muted-foreground hover:text-primary"
               title="Edit Code"
-              className="p-1 hover:bg-muted rounded transition-all text-muted-foreground hover:text-primary"
             >
-              <Code2 size={12} />
+              <Code2 size={14} />
             </button>
           )}
           <button
-            onClick={onDuplicate}
-            title="Duplicate Template"
-            className="p-1 hover:bg-muted rounded transition-all text-muted-foreground hover:text-primary"
+            onClick={(e) => { e.stopPropagation(); onDuplicate(); }}
+            className="h-7 w-7 flex items-center justify-center hover:bg-primary/10 rounded-full transition-all text-muted-foreground hover:text-primary"
+            title="Duplicate"
           >
-            <Copy size={12} />
+            <Copy size={14} />
           </button>
+          {!template.isBuiltin && onDelete && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              className="h-7 w-7 flex items-center justify-center hover:bg-destructive/10 rounded-full transition-all text-muted-foreground hover:text-destructive"
+              title="Delete"
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="p-3 pt-0 mt-auto flex items-center gap-1.5">
-        {isActive ? (
-          <div className="flex-1 inline-flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground h-8 px-3 text-[10px] font-bold uppercase tracking-wider">
-            Selected
-          </div>
-        ) : (
-          <button
-            onClick={onActivate}
-            className="flex-1 inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground h-8 px-3 text-[10px] font-bold uppercase tracking-wider shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px"
-          >
-            <Zap size={10} className="mr-1" />
-            Activate
-          </button>
-        )}
-        {!template.isBuiltin && onDelete && (
-          <button
-            onClick={onDelete}
-            className="inline-flex items-center justify-center rounded-lg h-8 w-8 p-0 shrink-0 cursor-pointer bg-destructive/10 text-destructive-foreground hover:bg-destructive/20 transition-all active:translate-y-px"
-          >
-            <Trash2 size={12} />
-          </button>
-        )}
       </div>
     </div>
   )
 }
 
-// ─── Main Dashboard ───────────────────────────────────────────────────────────
+// ─── Dashboard ───────────────────────────────────────────────────────────
 function Dashboard() {
   const [dark, setDark] = useDarkMode()
   const [activeId, setActiveId] = useState('')
@@ -220,6 +229,8 @@ function Dashboard() {
   const [status, setStatus] = useState<{ msg: string; ok: boolean } | null>(null)
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null)
   const [editorValue, setEditorValue] = useState('')
+  const [activeTab, setActiveTab] = useState<Tab>('built-in')
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null)
   
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -273,6 +284,7 @@ function Dashboard() {
   }
 
   async function doDelete(id: string) {
+    if (!confirm('Are you sure you want to delete this template?')) return
     const updated = userList.filter((t) => t.id !== id)
     await userTemplates.setValue(updated)
     setUserList(updated)
@@ -364,6 +376,7 @@ function Dashboard() {
         await userTemplates.setValue(updated)
         setUserList(updated)
         await doActivate(newTemplate)
+        setActiveTab('custom')
         showStatus(`"${newTemplate.name}" uploaded and activated.`, true)
       } catch (err) {
         console.error('Upload failed:', err)
@@ -423,6 +436,7 @@ function Dashboard() {
         }
 
         await refreshData()
+        setActiveTab('custom')
         showStatus('Backup imported successfully.', true)
       } catch (err) {
         showStatus('Failed to import backup. Invalid file.', false)
@@ -435,55 +449,53 @@ function Dashboard() {
   // ─── Editor View ────────────────────────────────────────────────────────────
   if (editingTemplate) {
     return (
-      <div className={cn("min-h-dvh bg-background text-foreground flex flex-col transition-colors duration-300 font-sans", dark && "dark")}>
-        <header className="border-b border-border h-14 sm:h-16 flex items-center justify-between px-4 sm:px-6 shrink-0">
+      <div className={cn("h-screen bg-background text-foreground flex flex-col transition-colors duration-300 font-sans", dark && "dark")}>
+        <header className="border-b border-border h-16 flex items-center justify-between px-6 shrink-0 bg-background/50 backdrop-blur-xl z-20">
           <div className="flex items-center gap-4">
              <button 
               onClick={() => setEditingTemplate(null)}
-              className="p-2 hover:bg-muted rounded-full transition-all"
+              className="h-10 w-10 flex items-center justify-center hover:bg-muted rounded-full transition-all border border-border"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={20} />
             </button>
             <div className="flex flex-col">
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground leading-none mb-1">Editing Template</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary leading-none mb-1">Editor Mode</span>
               <span className="text-sm font-bold truncate max-w-[200px]">{editingTemplate.name}</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setEditingTemplate(null)}
-              className="inline-flex items-center justify-center rounded-full border border-border bg-background h-9 px-4 text-[11px] font-bold uppercase tracking-wider hover:bg-muted transition-all"
+              className="inline-flex items-center justify-center rounded-full border border-border bg-background h-10 px-5 text-[11px] font-bold uppercase tracking-wider hover:bg-muted transition-all"
             >
-              Cancel
+              Discard
             </button>
             <button 
               onClick={doSaveCode}
-              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground h-9 px-5 text-[11px] font-bold uppercase tracking-wider shadow-lg hover:bg-primary/90 transition-all active:scale-95"
+              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground h-10 px-6 text-[11px] font-bold uppercase tracking-wider shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95"
             >
-              <Save size={14} className="mr-2" />
+              <Save size={16} className="mr-2" />
               Save Changes
             </button>
           </div>
         </header>
-        <main className="flex-grow flex flex-col md:flex-row overflow-hidden bg-muted/20">
-          {/* Code Editor Panel */}
-          <div className="flex-1 flex flex-col p-4 sm:p-6 overflow-hidden min-h-[50vh] md:min-h-0">
-            <div className="flex items-center justify-between mb-2">
-               <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-                <Code2 size={12} /> Source HTML
+        <main className="flex-grow flex overflow-hidden bg-muted/20">
+          <div className="flex-1 flex flex-col p-6 overflow-hidden">
+            <div className="flex items-center justify-between mb-3">
+               <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                <Code2 size={14} className="text-primary" /> Source HTML
                </h2>
+               <div className="text-[10px] font-medium text-muted-foreground/60 italic">Live editing enabled</div>
             </div>
-            <div className="flex-grow overflow-hidden">
+            <div className="flex-grow overflow-hidden rounded-2xl border border-border shadow-inner">
                <Editor value={editingTemplate.html} onChange={setEditorValue} darkMode={dark} />
             </div>
           </div>
-          
-          {/* Live Preview Panel */}
-          <div className="flex-1 border-t md:border-t-0 md:border-l border-border flex flex-col p-4 sm:p-6 overflow-hidden">
-             <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1.5">
-               <Sparkles size={12} /> Live Preview
+          <div className="flex-1 border-l border-border flex flex-col p-6 overflow-hidden">
+             <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
+               <Sparkles size={14} className="text-primary" /> Live Preview
              </h2>
-             <div className="flex-grow bg-card rounded-xl border border-border overflow-hidden shadow-2xl relative">
+             <div className="flex-grow bg-white rounded-2xl border border-border overflow-hidden shadow-2xl relative">
                 <iframe 
                   srcDoc={editorValue} 
                   className="absolute inset-0 w-full h-full border-none"
@@ -499,130 +511,291 @@ function Dashboard() {
 
   // ─── Dashboard View ─────────────────────────────────────────────────────────
   return (
-    <div className="min-h-dvh bg-background text-foreground transition-colors duration-300 font-sans">
-      <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-md z-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary p-1.5 rounded-lg">
-              <Sparkles size={16} className="text-primary-foreground" />
+    <div className={cn("h-screen bg-background text-foreground transition-colors duration-500 font-sans flex overflow-hidden selection:bg-primary/20", dark && "dark")}>
+      <input type="file" ref={fileRef} className="hidden" accept=".html" onChange={handleFile} />
+      <input type="file" ref={backupRef} className="hidden" accept=".json" onChange={handleImport} />
+
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-border flex flex-col shrink-0 bg-muted/20 backdrop-blur-xl">
+        <div className="p-6">
+          <div className="flex items-center gap-2.5 mb-10">
+            <div className="bg-primary p-2 rounded-2xl shadow-lg shadow-primary/20">
+              <Sparkles size={20} className="text-primary-foreground" />
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-base sm:text-lg font-black tracking-tighter italic leading-none">WYNTab</span>
-              <span className="text-[9px] font-black text-muted-foreground/40 leading-none ml-0.5">v{browser.runtime.getManifest().version}</span>
+            <div className="flex flex-col">
+              <span className="text-lg font-black tracking-tighter italic leading-none">WYNTab</span>
+              <span className="text-[9px] font-black text-muted-foreground/40 leading-none mt-1">DASHBOARD v{browser.runtime.getManifest().version}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <input type="file" ref={fileRef} className="hidden" accept=".html" onChange={handleFile} />
-            <input type="file" ref={backupRef} className="hidden" accept=".json" onChange={handleImport} />
-            
-            <div className="relative" ref={menuRef}>
+
+          <nav className="space-y-1">
+            <button 
+              onClick={() => setActiveTab('built-in')}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all",
+                activeTab === 'built-in' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" : "text-muted-foreground hover:bg-muted"
+              )}
+            >
+              <Library size={16} />
+              Built-in Gallery
+            </button>
+            <button 
+              onClick={() => setActiveTab('custom')}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all",
+                activeTab === 'custom' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" : "text-muted-foreground hover:bg-muted"
+              )}
+            >
+              <Upload size={16} />
+              Your Uploads
+            </button>
+            <button 
+              onClick={() => setActiveTab('settings')}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all",
+                activeTab === 'settings' ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" : "text-muted-foreground hover:bg-muted"
+              )}
+            >
+              <Settings size={16} />
+              Settings
+            </button>
+          </nav>
+        </div>
+
+        <div className="mt-auto p-6 space-y-4">
+           <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px] h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer transition-all hover:bg-primary/90 active:translate-y-px gap-1.5"
+                className="w-full inline-flex items-center justify-between rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] h-12 px-5 shadow-xl transition-all hover:opacity-90 active:scale-95"
               >
-                <Plus size={14} />
-                <span className="hidden xs:inline">Manage</span>
-                <span className="xs:hidden">Add</span>
-                <ChevronDown size={12} className={cn("transition-transform duration-200", showMenu && "rotate-180")} />
+                <div className="flex items-center gap-2">
+                  <Plus size={14} />
+                  <span>New Template</span>
+                </div>
+                <ChevronDown size={14} className={cn("transition-transform duration-300", showMenu && "rotate-180")} />
               </button>
 
               {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-border bg-card text-card-foreground shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute bottom-full left-0 mb-2 w-full rounded-2xl border border-border bg-card text-card-foreground shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
                   <div className="p-1.5">
                     <button
                       onClick={() => { setShowMenu(false); fileRef.current?.click(); }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors text-left cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-accent hover:text-accent-foreground transition-all text-left"
                     >
-                      <Upload size={14} className="text-muted-foreground" />
+                      <Upload size={14} className="text-primary" />
                       Upload HTML
                     </button>
                     <div className="h-px bg-border/50 my-1" />
                     <button
                       onClick={() => { setShowMenu(false); backupRef.current?.click(); }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors text-left cursor-pointer"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-accent hover:text-accent-foreground transition-all text-left"
                     >
-                      <FileUp size={14} className="text-muted-foreground" />
-                      Import Backup
-                    </button>
-                    <button
-                      onClick={() => { setShowMenu(false); handleExport(); }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors text-left cursor-pointer"
-                    >
-                      <Download size={14} className="text-muted-foreground" />
-                      Export Backup
+                      <FileUp size={14} className="text-primary" />
+                      Import JSON
                     </button>
                   </div>
                 </div>
               )}
             </div>
-            <button onClick={() => setDark(!dark)} className="inline-flex items-center justify-center rounded-full border border-border bg-background h-8 w-8 sm:h-9 sm:w-9 cursor-pointer transition-all hover:bg-accent hover:text-accent-foreground active:translate-y-px">
-              {dark ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
-          </div>
-        </div>
-      </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-16">
-        <section className="space-y-4 sm:space-y-6">
-          <div className="flex items-center gap-2 border-b border-border/50 pb-2">
-            <LayoutGrid size={14} className="text-muted-foreground" />
-            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Built-in Gallery</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {builtins.map((t) => (
-              <TemplateCard
-                key={t.id}
-                template={t}
-                isActive={t.id === activeId}
-                onActivate={() => doActivate(t)}
-                onDuplicate={() => doDuplicate(t)}
-                onEditCode={() => {
-                   // Builtins can't be edited directly, duplicate first
-                   doDuplicate(t).then(() => {
-                      showStatus('Duplicated builtin for editing.', true)
-                   })
-                }}
-              />
-            ))}
-          </div>
-        </section>
-
-        {userList.length > 0 && (
-          <section className="space-y-4 sm:space-y-6">
-            <div className="flex items-center gap-2 border-b border-border/50 pb-2">
-              <Upload size={14} className="text-muted-foreground" />
-              <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Your Custom Uploads</h2>
+            <div className="flex items-center justify-between px-2">
+               <button 
+                onClick={() => setDark(!dark)} 
+                className="h-10 w-10 flex items-center justify-center rounded-xl border border-border bg-background transition-all hover:bg-accent hover:border-accent"
+              >
+                {dark ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+              <div className="flex flex-col items-end">
+                 <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Theme</span>
+                 <span className="text-[10px] font-bold">{dark ? 'Dark Mode' : 'Light Mode'}</span>
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-              {userList.map((t) => (
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col overflow-hidden bg-background">
+        <header className="h-16 flex items-center justify-between px-8 border-b border-border bg-background/50 backdrop-blur-md z-10 shrink-0">
+           <div className="flex items-center gap-3">
+              {activeTab === 'built-in' && <Library size={18} className="text-primary" />}
+              {activeTab === 'custom' && <Upload size={18} className="text-primary" />}
+              {activeTab === 'settings' && <Settings size={18} className="text-primary" />}
+              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-foreground">
+                {activeTab === 'built-in' ? 'Built-in Gallery' : activeTab === 'custom' ? 'Your Custom Library' : 'System Settings'}
+              </h2>
+           </div>
+           {activeTab === 'custom' && userList.length > 0 && (
+              <button 
+                onClick={handleExport}
+                className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border border-border hover:bg-muted transition-all"
+              >
+                <Download size={14} />
+                Export Backup
+              </button>
+           )}
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          {activeTab === 'built-in' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {builtins.map((t) => (
                 <TemplateCard
                   key={t.id}
                   template={t}
                   isActive={t.id === activeId}
                   onActivate={() => doActivate(t)}
-                  onDelete={() => doDelete(t.id)}
-                  onRename={(name) => doRename(t.id, name)}
                   onDuplicate={() => doDuplicate(t)}
+                  onPreview={() => setPreviewTemplate(t)}
                   onEditCode={() => {
-                    setEditingTemplate(t)
-                    setEditorValue(t.html)
+                     doDuplicate(t).then(() => showStatus('Duplicated for editing.', true))
                   }}
                 />
               ))}
             </div>
-          </section>
-        )}
+          )}
+
+          {activeTab === 'custom' && (
+            userList.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {userList.map((t) => (
+                  <TemplateCard
+                    key={t.id}
+                    template={t}
+                    isActive={t.id === activeId}
+                    onActivate={() => doActivate(t)}
+                    onDelete={() => doDelete(t.id)}
+                    onRename={(name) => doRename(t.id, name)}
+                    onDuplicate={() => doDuplicate(t)}
+                    onPreview={() => setPreviewTemplate(t)}
+                    onEditCode={() => {
+                      setEditingTemplate(t)
+                      setEditorValue(t.html)
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center text-center max-w-sm mx-auto animate-in fade-in zoom-in duration-500">
+                <div className="h-20 w-20 bg-muted/50 rounded-3xl flex items-center justify-center mb-6 border border-border">
+                  <Upload size={32} className="text-muted-foreground/50" />
+                </div>
+                <h3 className="text-lg font-black uppercase tracking-tighter italic mb-2">No Custom Templates</h3>
+                <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-8">
+                  Upload your first HTML template to start personalizing your experience beyond the built-in gallery.
+                </p>
+                <button 
+                  onClick={() => fileRef.current?.click()}
+                  className="inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                >
+                  <Plus size={16} />
+                  Upload HTML
+                </button>
+              </div>
+            )
+          )}
+
+          {activeTab === 'settings' && (
+            <div className="max-w-2xl animate-in fade-in slide-in-from-left-4 duration-500">
+               <div className="space-y-8">
+                  <div className="space-y-4">
+                     <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">System Information</h3>
+                     <div className="grid gap-2">
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 border border-border">
+                           <div className="flex items-center gap-3">
+                              <Info size={16} className="text-muted-foreground" />
+                              <span className="text-[11px] font-bold uppercase tracking-wider">Version</span>
+                           </div>
+                           <span className="text-[11px] font-black font-mono text-primary">{browser.runtime.getManifest().version}</span>
+                        </div>
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 border border-border">
+                           <div className="flex items-center gap-3">
+                              <Monitor size={16} className="text-muted-foreground" />
+                              <span className="text-[11px] font-bold uppercase tracking-wider">Platform</span>
+                           </div>
+                           <span className="text-[11px] font-black font-mono text-primary">Web Extension</span>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="space-y-4">
+                     <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Data Management</h3>
+                     <div className="p-6 rounded-3xl bg-muted/30 border border-border">
+                        <p className="text-xs text-muted-foreground font-medium mb-6 leading-relaxed">
+                           Your data is stored locally in your browser. You can export a backup of all your custom templates to move them to another machine.
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                           <button 
+                            onClick={handleExport}
+                            className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all"
+                           >
+                              <Download size={14} />
+                              Export Backup
+                           </button>
+                           <button 
+                            onClick={() => backupRef.current?.click()}
+                            className="inline-flex items-center gap-2 bg-muted text-foreground px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-border transition-all border border-border"
+                           >
+                              <FileUp size={14} />
+                              Import JSON
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+        </div>
       </main>
 
-      <footer className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 border-t border-border/50">
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest text-center">
-          Crafted for your perfect new tab experience
-        </p>
-      </footer>
+      {/* Large Preview Modal */}
+      {previewTemplate && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-10 animate-in fade-in duration-300">
+           <div className="absolute inset-0 bg-background/80 backdrop-blur-md" onClick={() => setPreviewTemplate(null)} />
+           <div className="relative w-full max-w-6xl aspect-video bg-white rounded-2xl shadow-2xl overflow-hidden border border-border/50 flex flex-col scale-in animate-in zoom-in-95 duration-300">
+              <header className="h-16 flex items-center justify-between px-8 bg-background/50 backdrop-blur-xl border-b border-border shrink-0">
+                 <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                       <Eye size={20} />
+                    </div>
+                    <div>
+                       <h3 className="text-sm font-black uppercase tracking-tighter italic">{previewTemplate.name}</h3>
+                       <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Large Preview Mode</p>
+                    </div>
+                 </div>
+                 <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => { doActivate(previewTemplate); setPreviewTemplate(null); }}
+                      className="h-10 px-6 rounded-2xl bg-primary text-primary-foreground text-[11px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+                    >
+                      Activate Template
+                    </button>
+                    <button 
+                      onClick={() => setPreviewTemplate(null)}
+                      className="h-10 w-10 flex items-center justify-center rounded-2xl bg-muted text-muted-foreground hover:bg-border transition-all"
+                    >
+                      <X size={20} />
+                    </button>
+                 </div>
+              </header>
+              <div className="flex-1 relative bg-white">
+                 <iframe 
+                   srcDoc={previewTemplate.html} 
+                   className="absolute inset-0 w-full h-full border-none"
+                   title="Large Preview"
+                   sandbox="allow-scripts allow-same-origin allow-forms"
+                 />
+              </div>
+           </div>
+        </div>
+      )}
 
       {status && (
-        <div className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className={cn('rounded-full border px-4 sm:px-6 py-2.5 sm:py-3 text-[11px] font-bold uppercase tracking-widest shadow-2xl backdrop-blur-xl whitespace-nowrap', status.ok ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400' : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400')}>
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[110] animate-in fade-in slide-in-from-bottom-6 duration-500">
+          <div className={cn(
+            'rounded-3xl border px-8 py-4 text-[11px] font-black uppercase tracking-widest shadow-2xl backdrop-blur-2xl whitespace-nowrap flex items-center gap-3', 
+            status.ok ? 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400' : 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400'
+          )}>
+            {status.ok ? <CheckCircle2 size={16} /> : <X size={16} />}
             {status.msg}
           </div>
         </div>
@@ -631,4 +804,5 @@ function Dashboard() {
   )
 }
 
+// ─── App Root ──────────────────────────────────────────────────────────────
 createRoot(document.getElementById('root')!).render(<Dashboard />)

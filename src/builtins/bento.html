@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bento Grid - WYNTab</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --card: #0f0f0f;
+            --border: #1f1f1f;
+            --text: #ffffff;
+            --text-dim: #737373;
+            --accent: #3b82f6;
+        }
+        body {
+            margin: 0;
+            padding: 2rem;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 1.25rem;
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
+        }
+        .item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .item:hover {
+            transform: scale(1.02);
+            border-color: #404040;
+            background: #141414;
+        }
+        .time-card {
+            grid-column: span 2;
+            grid-row: span 2;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #0f0f0f 0%, #050505 100%);
+        }
+        #clock {
+            font-size: 7rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: -4px;
+            background: linear-gradient(to bottom, #fff, #a1a1a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #date {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 600;
+        }
+        .shortcut-grid {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+        .shortcut {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .shortcut:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .quote-card {
+            grid-column: span 2;
+            text-align: center;
+            padding: 1.5rem 3rem;
+        }
+        #quote {
+            font-style: normal;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .weather-card, .status-card {
+            grid-column: span 1;
+            align-items: center;
+        }
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .label {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.25rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="item time-card">
+            <h1 id="clock">12:00</h1>
+            <div id="date">JANUARY 1, 2026</div>
+        </div>
+        
+        <div class="shortcut-grid">
+            <a href="https://github.com" class="shortcut">GitHub</a>
+            <a href="https://gmail.com" class="shortcut">Gmail</a>
+            <a href="https://youtube.com" class="shortcut">YouTube</a>
+            <a href="https://twitter.com" class="shortcut">Twitter</a>
+        </div>
+
+        <div class="item weather-card">
+            <div class="icon">☁️</div>
+            <div style="font-size: 1.75rem; font-weight: 800;">18°C</div>
+            <div class="label">Cloudy</div>
+        </div>
+
+        <div class="item status-card">
+            <div class="icon">✨</div>
+            <div style="font-size: 1.75rem; font-weight: 800;">CALM</div>
+            <div class="label">Morning</div>
+        </div>
+
+        <div class="item quote-card">
+            <p id="quote">"Simplicity is the ultimate sophistication."</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem; color: var(--accent); font-weight: 700; opacity: 0.8;">— Leonardo da Vinci</p>
+        </div>
+    </div>
+</body>
+</html>
