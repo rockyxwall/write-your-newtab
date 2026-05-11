@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.3] - 2026-05-11
+### Added
+- **Icon Generation Script**: Added `scripts/generate_brand_icons.ps1` to automatically transform the project's master icon into the solid white brand aesthetic and generate all standard sizes (16, 32, 48, 96, 128).
+- **Create Live Workflow**: Enhanced the "Custom Library" with a new "Create Live" feature that provides a professional starter template for immediate development.
+### Changed
+- **Draft Mode for New Templates**: New templates created via "Create Live" are now treated as drafts and only saved to the library when explicitly clicking "Save Changes".
+- **Library Renaming**: Renamed "Your Uploads" to "Custom Library" to reflect its expanded role as both an upload hub and a live development workspace.
+- **Empty State Refinement**: Updated the library's empty state copy to be more inviting and descriptive of the new creation capabilities.
+
 ## [0.4.2] - 2026-05-11
 ### Added
 - **Component Extraction**: Refactored the Dashboard by extracting `TemplateCard` into a dedicated, reusable component in `src/components/`, improving code maintainability.

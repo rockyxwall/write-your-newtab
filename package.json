@@ -2,7 +2,7 @@
   "name": "wyntab",
   "description": "Write Your NewTab, lets you replace the default new tab page with your own custom HTML",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.4.3",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -11,6 +11,7 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "icons": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate_brand_icons.ps1",
     "compile": "tsc --noEmit",
     "postinstall": "wxt prepare"
   },
