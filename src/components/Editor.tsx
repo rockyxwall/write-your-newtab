@@ -61,7 +61,7 @@ export function Editor({ value, onChange, darkMode }: EditorProps) {
   return (
     <div 
       ref={containerRef} 
-      className="h-full w-full border border-border rounded-xl overflow-hidden shadow-inner bg-card"
+      className="h-full w-full border border-border rounded-sm overflow-hidden shadow-inner bg-card"
     />
   )
 }
